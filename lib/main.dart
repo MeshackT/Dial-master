@@ -1,3 +1,5 @@
+import 'package:dial/MoreServices.dart';
+import 'package:dial/ReusableCode.dart';
 import 'package:dial/Settings.dart';
 import 'package:dial/addFriends.dart';
 import 'package:dial/feedback%20class/EmailTemplate.dart';
@@ -5,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'landingScreen.dart';
+
+Reuse objReuse = Reuse();
 
 void main() => runApp(const MyApp());
 
@@ -34,18 +38,18 @@ class _MyAppState extends State<MyApp> {
     if (statuses[Permission.contacts]!.isDenied) {
       //check each permission status after.
       //showToast("Permission Denied");
-      print("Permission Denied");
+      Reuse.callToast("Permission Denied");
     } else if (statuses[Permission.photos]!.isDenied) {
       //check each permission status after.
       //showToast("Permission Denied");
-      print("Permission Denied");
+      //Reuse.callToast("Permission Denied");
     } else if (statuses[Permission.phone]!.isDenied) {
       //check each permission status after.
       //showToast("Permission Denied");
-      print("Permission Denied");
+      Reuse.callToast("Permission Denied");
     } else {
       //showToast("Permission Granted");
-      print("Permission Granted");
+      Reuse.callToast("Permission Granted");
     }
   }
 
@@ -63,12 +67,12 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
       routes: {
-        // When navigating to the "/" route, build the FirstScreen widget.
+        // When navigating to the "/" route, build the FirstScreen(Home) widget.
         '/': (context) => const MyHomePage(),
-        // When navigating to the "/second" route, build the SecondScreen widget.
         '/addFriends': (context) => const AddFriends(),
         '/settings': (context) => const Settings(),
         '/emailTemplate': (context) => const EmailTemplate(),
+        '/moreServices': (context) => const MoreServices(),
       },
     );
   }
@@ -78,8 +82,4 @@ class _MyAppState extends State<MyApp> {
     getPermission();
     super.initState();
   }
-
-  /*void showToast(String msg, {int? duration, int? gravity}) {
-    Toast.show(msg, duration: duration, gravity: gravity);
-  }*/
 }

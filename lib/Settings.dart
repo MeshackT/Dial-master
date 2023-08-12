@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 
 class Settings extends StatelessWidget {
   const Settings({Key? key}) : super(key: key);
+  static const routeName = '/settings';
 
   @override
   Widget build(BuildContext context) {
-    const String number = '0676428404';
+    //const String number = '0676428404';
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -102,31 +103,32 @@ class Settings extends StatelessWidget {
                     ],
                   ),
                 ),
-                headers(context, 'Follow Us'),
-                SizedBox(
-                  child: Column(
-                    children: [
-                      Reuse.links(
-                          context,
-                          Uri.parse(
-                              'https://www.linkedin.com/in/templeton-meshack-9b288b1a0'),
-                          "LinkedIn"),
-                      Reuse.links(
-                          context,
-                          Uri.parse('https://dribbble.com/Templeton'),
-                          "Dribbble"),
-                    ],
-                  ),
-                ),
+                // headers(context, 'Follow Us'),
+                // SizedBox(
+                //   child: Column(
+                //     children: [
+                //       Reuse.links(
+                //           context,
+                //           Uri.parse(
+                //               'www.linkedin.com/in/templeton-meshack-9b288b1a0'),
+                //           "LinkedIn"),
+                //       Reuse.links(
+                //           context,
+                //           Uri.parse('https://dribbble.com/Templeton'),
+                //           "Dribbble"),
+                //     ],
+                //   ),
+                // ),
                 const SizedBox(
                   height: 10,
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 10),
                   child: Text(
-                    "App version 2.0.0",
-                    style:
-                        TextStyle(color: Theme.of(context).primaryColorLight),
+                    "App version 2.3.2",
+                    style: TextStyle(
+                        fontSize: 15,
+                        color: Theme.of(context).primaryColorLight),
                   ),
                 ),
               ],

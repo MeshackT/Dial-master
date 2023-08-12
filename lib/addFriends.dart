@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:contacts_service/contacts_service.dart';
 import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:flutter/foundation.dart';
@@ -11,6 +9,7 @@ import 'ReusableCode.dart';
 
 class AddFriends extends StatefulWidget {
   const AddFriends({Key? key}) : super(key: key);
+  static const routeName = '/addFriends';
 
   @override
   State<AddFriends> createState() => _AddFriendsState();
@@ -244,6 +243,7 @@ class _AddFriendsState extends State<AddFriends> {
                     : Expanded(
                         flex: 1,
                         child: ListView.builder(
+                          padding: const EdgeInsets.only(bottom: 130.0),
                           itemCount: (isSearching == true)
                               ? contactFiltered.length
                               : contacts.length,
@@ -275,22 +275,24 @@ class _AddFriendsState extends State<AddFriends> {
                                   )).whenComplete(() => const AddFriends());
                                 } on Exception catch (e) {
                                   // Anything else that is an exception
-                                  print('Unknown exception: $e');
+                                  if (kDebugMode) {
+                                    print('Unknown exception: $e');
+                                  }
                                 }
                               },
                               onLongPress: () async {
                                 try {
-                                  var update =
-                                      await ContactsService.openExistingContact(
-                                          contact);
-                                  final changUpdate =
-                                      await ContactsService.updateContact(
-                                          update);
-
-                                  setState(() async {
-                                    await ContactsService.openContactForm();
-                                    update = changUpdate;
-                                  });
+                                  // var update =
+                                  //     await ContactsService.openExistingContact(
+                                  //         contact);
+                                  // final changUpdate =
+                                  //     await ContactsService.updateContact(
+                                  //         update);
+                                  //
+                                  // setState(() async {
+                                  //   await ContactsService.openContactForm();
+                                  //   update = changUpdate;
+                                  // });
                                 } on FormOperationException catch (e) {
                                   switch (e.errorCode) {
                                     case FormOperationErrorCode
@@ -323,7 +325,7 @@ class _AddFriendsState extends State<AddFriends> {
                                         width: 50,
                                         child: CircleAvatar(
                                           backgroundColor: Theme.of(context)
-                                              .primaryColorDark
+                                              .primaryColor
                                               .withOpacity(.49),
                                           child: Text(
                                             contact.displayName![0].trim(),
@@ -386,7 +388,7 @@ class _AddFriendsState extends State<AddFriends> {
                                         width: 50,
                                         child: IconButton(
                                           icon: const Icon(
-                                            Icons.whatsapp,
+                                            Icons.chat,
                                             color: Colors.green,
                                             size: 20,
                                           ),
@@ -435,8 +437,14 @@ class _AddFriendsState extends State<AddFriends> {
             height: 40,
             width: 40,
             child: FloatingActionButton(
-              backgroundColor: Theme.of(context).primaryColorDark,
+              backgroundColor: Theme.of(context).primaryColor,
               heroTag: "button_1",
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.horizontal(
+                  left: Radius.circular(30),
+                  right: Radius.circular(30),
+                ),
+              ),
               onPressed: () async {
                 //get the contacts again
                 setState(() {
@@ -455,8 +463,14 @@ class _AddFriendsState extends State<AddFriends> {
             height: 20,
           ),
           FloatingActionButton(
-            backgroundColor: Theme.of(context).primaryColorDark,
+            backgroundColor: Theme.of(context).primaryColor,
             heroTag: "button_2",
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.horizontal(
+                left: Radius.circular(30),
+                right: Radius.circular(30),
+              ),
+            ),
             onPressed: () async {
               try {
                 //open contact form to save contacts
@@ -501,7 +515,7 @@ class _AddFriendsState extends State<AddFriends> {
   Future<ScaffoldFeatureController<SnackBar, SnackBarClosedReason>> callSnack(
       Contact contact, int index) async {
     return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      backgroundColor: Theme.of(context).primaryColorDark,
+      backgroundColor: Theme.of(context).primaryColor,
       duration: const Duration(seconds: 0),
       content: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

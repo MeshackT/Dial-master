@@ -5,6 +5,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'MoreServices.dart';
+
 class Reuse {
   //button cards emergency
   static ClipRRect buttonType(String title, Color color, icon,
@@ -123,6 +125,49 @@ class Reuse {
     );
   }
 
+  // More settings
+  static Future<void> callSAEmergency() async {
+    const String number = '112';
+    await FlutterPhoneDirectCaller.callNumber(number).whenComplete(
+      () => const MoreServices(),
+    );
+  }
+
+  static Future<void> callDepartmentOfWater() async {
+    const String number = '0800200200';
+    await FlutterPhoneDirectCaller.callNumber(number).whenComplete(
+      () => const MoreServices(),
+    );
+  }
+
+  static Future<void> callNationalCrisisLine() async {
+    const String number = '0861322322';
+    await FlutterPhoneDirectCaller.callNumber(number).whenComplete(
+      () => const MoreServices(),
+    );
+  }
+
+  static Future<void> callNationalInstitutionOfDiseases() async {
+    const String number = '0800029999';
+    await FlutterPhoneDirectCaller.callNumber(number).whenComplete(
+      () => const MoreServices(),
+    );
+  }
+
+  static Future<void> callDepartmentOfHomeAffairs() async {
+    const String number = ' 0800601190';
+    await FlutterPhoneDirectCaller.callNumber(number).whenComplete(
+      () => const MoreServices(),
+    );
+  }
+
+  static Future<void> callGenderBasedViolence() async {
+    const String number = '0800428428';
+    await FlutterPhoneDirectCaller.callNumber(number).whenComplete(
+      () => const MoreServices(),
+    );
+  }
+
   //Share details
   static display(BuildContext context, String nameTemporary,
       String phoneTemporary, String message) async {
@@ -145,6 +190,23 @@ class Reuse {
             style: TextStyle(color: Theme.of(context).primaryColorLight),
           )),
     );
+  }
+
+  static callToast(String title) {
+    return Fluttertoast.showToast(
+      msg: title,
+      textColor: Colors.white,
+      backgroundColor: Colors.deepPurple,
+      toastLength: Toast.LENGTH_SHORT,
+    );
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //   SnackBar(
+    //       backgroundColor: Theme.of(context).primaryColor,
+    //       content: Text(
+    //         "Number Copied",
+    //         style: TextStyle(color: Theme.of(context).primaryColorLight),
+    //       )),
+    // );
   }
 
   //whatsapp call

@@ -1,9 +1,13 @@
+import 'package:dial/MoreServices.dart';
 import 'package:dial/ReusableCode.dart';
 import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:flutter/material.dart';
 
+//call buttons
+
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
+  static const routeName = '/landingScreen';
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -191,6 +195,68 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
         ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // SizedBox(
+          //   // color: Theme.of(context).primaryColor,
+          //   width: 60,
+          //   height: 60,
+          //   child: FloatingActionButton(
+          //     backgroundColor: Theme.of(context).primaryColor,
+          //     shape: const RoundedRectangleBorder(
+          //       borderRadius: BorderRadius.horizontal(
+          //         left: Radius.circular(50),
+          //         right: Radius.circular(50),
+          //       ),
+          //     ),
+          //     heroTag: "button_5",
+          //     isExtended: true,
+          //     onPressed: () async {
+          //       //Navigate to another Layout
+          //       Navigator.pushNamedAndRemoveUntil(
+          //           context, MoreServices.routeName, (route) => false);
+          //     },
+          //     child: const Center(
+          //       child: Icon(Icons.dialpad),
+          //     ),
+          //   ),
+          // ),
+          const SizedBox(
+            height: 10,
+          ),
+          SizedBox(
+            // color: Theme.of(context).primaryColor,
+            width: MediaQuery.of(context).size.width / 2.5,
+            height: 50,
+            child: FloatingActionButton(
+              backgroundColor: Theme.of(context).primaryColor,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.horizontal(
+                  left: Radius.circular(50),
+                  right: Radius.circular(50),
+                ),
+              ),
+              heroTag: "button_3",
+              isExtended: true,
+              onPressed: () async {
+                //Navigate to another Layout
+                Navigator.pushNamedAndRemoveUntil(
+                    context, MoreServices.routeName, (route) => false);
+              },
+              child: Center(
+                child: Text(
+                  "More Services",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Theme.of(context).primaryColorLight),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

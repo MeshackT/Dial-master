@@ -31,6 +31,7 @@ dependencies:
     sdk: flutter
 
 
+
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
 
@@ -51,8 +52,7 @@ dependencies:
   #takes number to dial pad
   url_launcher: ^6.1.6
 
-
-
+  material_design_icons_flutter: ^7.0.7296
   #call by pressing
   flutter_phone_direct_caller: ^2.1.1
 
@@ -66,13 +66,13 @@ dependencies:
   fluttertoast: ^8.1.1
 
   #Testing display plugin
-  logger: ^1.1.0
+  logger: ^2.0.1
 
   #back Button
   double_back_to_close_app: ^2.1.0
 
   #share information
-  share_plus: ^6.0.0
+  share_plus: ^7.1.0
 
   #LazyLoading
   lazy_loading_list: ^1.0.1
@@ -81,7 +81,7 @@ dependencies:
   #open_whatsapp: ^0.0.1
 
   #Swipe card
-  flutter_slidable: ^2.0.0
+  flutter_slidable: ^3.0.0
 
 dev_dependencies:
   flutter_test:
