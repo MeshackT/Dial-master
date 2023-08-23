@@ -118,12 +118,12 @@ class _AddFriendsState extends State<AddFriends> {
                   end: Alignment.bottomCenter),
             ),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Stack(
                   children: [
                     Image.asset(
-                      'images/l.png',
+                      'images/tap.png',
                       width: 390,
                       height: 218,
                       fit: BoxFit.cover,
@@ -430,41 +430,12 @@ class _AddFriendsState extends State<AddFriends> {
           ),
         ),
       ),
-      floatingActionButton: Column(
+      floatingActionButton: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          SizedBox(
-            height: 40,
-            width: 40,
-            child: FloatingActionButton(
-              backgroundColor: Theme.of(context).primaryColor,
-              heroTag: "button_1",
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.horizontal(
-                  left: Radius.circular(30),
-                  right: Radius.circular(30),
-                ),
-              ),
-              onPressed: () async {
-                //get the contacts again
-                setState(() {
-                  //clear the textBox
-                  search.clear();
-                });
-                //call the list
-                await ContactsService.getContacts();
-              },
-              tooltip: 'refresh contact',
-              child: Icon(Icons.refresh,
-                  color: Theme.of(context).primaryColorLight),
-            ),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
           FloatingActionButton(
             backgroundColor: Theme.of(context).primaryColor,
-            heroTag: "button_2",
+            heroTag: "button_3",
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.horizontal(
                 left: Radius.circular(30),
@@ -473,16 +444,14 @@ class _AddFriendsState extends State<AddFriends> {
             ),
             onPressed: () async {
               try {
-                //open contact form to save contacts
-                await ContactsService.openContactForm();
-
-                //create a temporary list storing the contacts
-                List<Contact> temporaryContacts =
-                    (await ContactsService.getContacts()).toList();
-                setState(() {
-                  //populate the list and update the UI
-                  contacts = temporaryContacts;
-                });
+                String phoneNumber = "";
+                final url = 'tel:$phoneNumber';
+                // if () {
+                //   await launch(url);
+                // } else {
+                //   throw 'Could not launch $url';
+                // }
+                FlutterPhoneDirectCaller.callNumber(url);
               } on FormOperationException catch (e) {
                 switch (e.errorCode) {
                   case FormOperationErrorCode.FORM_COULD_NOT_BE_OPEN:
@@ -502,9 +471,87 @@ class _AddFriendsState extends State<AddFriends> {
               }
             },
             child: Icon(
-              Icons.add,
+              Icons.call,
               color: Theme.of(context).primaryColorLight,
             ),
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              SizedBox(
+                height: 40,
+                width: 40,
+                child: FloatingActionButton(
+                  backgroundColor: Theme.of(context).primaryColor,
+                  heroTag: "button_1",
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.horizontal(
+                      left: Radius.circular(30),
+                      right: Radius.circular(30),
+                    ),
+                  ),
+                  onPressed: () async {
+                    //get the contacts again
+                    setState(() {
+                      //clear the textBox
+                      search.clear();
+                    });
+                    //call the list
+                    await ContactsService.getContacts();
+                  },
+                  tooltip: 'refresh contact',
+                  child: Icon(Icons.refresh,
+                      color: Theme.of(context).primaryColorLight),
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              FloatingActionButton(
+                backgroundColor: Theme.of(context).primaryColor,
+                heroTag: "button_2",
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.horizontal(
+                    left: Radius.circular(30),
+                    right: Radius.circular(30),
+                  ),
+                ),
+                onPressed: () async {
+                  try {
+                    //open contact form to save contacts
+                    await ContactsService.openContactForm();
+
+                    //create a temporary list storing the contacts
+                    List<Contact> temporaryContacts =
+                        (await ContactsService.getContacts()).toList();
+                    setState(() {
+                      //populate the list and update the UI
+                      contacts = temporaryContacts;
+                    });
+                  } on FormOperationException catch (e) {
+                    switch (e.errorCode) {
+                      case FormOperationErrorCode.FORM_COULD_NOT_BE_OPEN:
+                        break;
+                      case FormOperationErrorCode.FORM_OPERATION_CANCELED:
+                        if (kDebugMode) {
+                          print(e.toString());
+                        }
+                        break;
+                      case FormOperationErrorCode.FORM_OPERATION_UNKNOWN_ERROR:
+                        if (kDebugMode) {
+                          print(e.toString());
+                        }
+                        break;
+                      default:
+                    }
+                  }
+                },
+                child: Icon(
+                  Icons.add,
+                  color: Theme.of(context).primaryColorLight,
+                ),
+              ),
+            ],
           ),
         ],
       ), // This trailing comma makes auto-formatting nicer for build methods.

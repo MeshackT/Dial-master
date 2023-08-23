@@ -32,7 +32,7 @@ class MoreServices extends StatelessWidget {
                     end: Alignment.bottomCenter),
               ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Stack(
                     children: [

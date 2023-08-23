@@ -40,7 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     end: Alignment.bottomCenter),
               ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Stack(
                     children: [
@@ -201,37 +201,13 @@ class _MyHomePageState extends State<MyHomePage> {
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // SizedBox(
-          //   // color: Theme.of(context).primaryColor,
-          //   width: 60,
-          //   height: 60,
-          //   child: FloatingActionButton(
-          //     backgroundColor: Theme.of(context).primaryColor,
-          //     shape: const RoundedRectangleBorder(
-          //       borderRadius: BorderRadius.horizontal(
-          //         left: Radius.circular(50),
-          //         right: Radius.circular(50),
-          //       ),
-          //     ),
-          //     heroTag: "button_5",
-          //     isExtended: true,
-          //     onPressed: () async {
-          //       //Navigate to another Layout
-          //       Navigator.pushNamedAndRemoveUntil(
-          //           context, MoreServices.routeName, (route) => false);
-          //     },
-          //     child: const Center(
-          //       child: Icon(Icons.dialpad),
-          //     ),
-          //   ),
-          // ),
           const SizedBox(
             height: 10,
           ),
           SizedBox(
             // color: Theme.of(context).primaryColor,
             width: MediaQuery.of(context).size.width / 2.5,
-            height: 50,
+            height: 48,
             child: FloatingActionButton(
               backgroundColor: Theme.of(context).primaryColor,
               shape: const RoundedRectangleBorder(
