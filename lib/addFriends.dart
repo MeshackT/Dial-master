@@ -1,11 +1,16 @@
 import 'package:contacts_service/contacts_service.dart';
-import 'package:double_back_to_close_app/double_back_to_close_app.dart';
+import 'package:dial/DBModel/DatabaseHelper.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:logger/logger.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:uuid/uuid.dart';
 
 import 'ReusableCode.dart';
+
+Logger logger = Logger(printer: PrettyPrinter(colors: true));
 
 class AddFriends extends StatefulWidget {
   const AddFriends({Key? key}) : super(key: key);
@@ -16,6 +21,8 @@ class AddFriends extends StatefulWidget {
 }
 
 class _AddFriendsState extends State<AddFriends> {
+  final DateTime timeStamp = DateTime.now();
+
   //store contacts
   List<Contact> contacts = [];
   List<Contact> contactFiltered = [];
@@ -86,34 +93,86 @@ class _AddFriendsState extends State<AddFriends> {
     //create a temporary list storing the contacts
     List<Contact> temporaryContacts =
         (await ContactsService.getContacts()).toList();
+
     setState(() {
-      //populate the list and update the UI
       contacts = temporaryContacts;
     });
+  }
+
+  //add
+  Future<void> _addContact(String name, String phoneNumber) async {
+    if (await Permission.contacts.request().isGranted) {
+      // Create a new contact object
+      final newContact = Contact(
+        givenName: name,
+        phones: [Item(label: 'mobile', value: phoneNumber)],
+      );
+
+      // Add the contact using ContactsService
+      await ContactsService.addContact(newContact);
+
+      // Update the UI by adding the new contact to your contacts list
+      setState(() {
+        contacts.add(newContact);
+      });
+    } else {
+      // Handle the case when permission is not granted
+    }
+  }
+
+  //delete
+  Future<void> _deleteContact(int index) async {
+    if (await Permission.contacts.request().isGranted) {
+      await ContactsService.deleteContact(contacts[index]);
+      setState(() {
+        contacts.removeAt(index);
+      });
+    }
+  }
+
+  // _update
+  void _updateContact(int index, String newName, String newPhoneNumber) async {
+    if (await Permission.contacts.request().isGranted) {
+      Contact updatedContact = contacts[index];
+      updatedContact.displayName = newName;
+
+      // Update the phone number. You might need to handle the case where the contact has multiple phone numbers.
+      if (updatedContact.phones!.isNotEmpty) {
+        updatedContact.phones![0].value = newPhoneNumber;
+      }
+
+      // Update the contact using ContactsService.updateContact
+      await ContactsService.updateContact(updatedContact);
+
+      setState(() {
+        contacts[index] = updatedContact;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    search.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     bool isSearching = search.text.isNotEmpty;
-
     return Scaffold(
+      // backgroundColor: Theme.of(context).primaryColorLight,
       extendBodyBehindAppBar: true,
-      body: DoubleBackToCloseApp(
-        snackBar: SnackBar(
-          backgroundColor: Theme.of(context).primaryColorDark,
-          content: Text(
-            'Tap back again to leave',
-            style: TextStyle(color: Theme.of(context).primaryColorLight),
-            textAlign: TextAlign.center,
-          ),
-        ),
-        child: SafeArea(
+      extendBody: true,
+      backgroundColor: const Color(0xFF072456),
+      body: SafeArea(
+        child: SingleChildScrollView(
           child: Container(
             height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
             margin: const EdgeInsets.only(top: 0.0),
             decoration: const BoxDecoration(
               gradient: LinearGradient(
-                  colors: [Color(0xff3D3C77), Color(0xff000000)],
+                  colors: [Color(0xFF072456), Color(0xff000000)],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter),
             ),
@@ -122,11 +181,15 @@ class _AddFriendsState extends State<AddFriends> {
               children: [
                 Stack(
                   children: [
-                    Image.asset(
-                      'images/tap.png',
-                      width: 390,
-                      height: 218,
-                      fit: BoxFit.cover,
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height / 3.8,
+                      child: Image.asset(
+                        'images/tap.png',
+                        width: 390,
+                        height: 218,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                     //Reuse.speedDialHeader("Speed dial", context),
                     Padding(
@@ -193,34 +256,36 @@ class _AddFriendsState extends State<AddFriends> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
+                                // Reuse.navigatorButton(
+                                //   Icon(
+                                //     Icons.location_on,
+                                //     size: 25.0,
+                                //     color: Theme.of(context).primaryColorLight,
+                                //   ),
+                                //   () => null,
+                                // ),
                                 Reuse.navigatorButton(
                                   Icon(
-                                    Icons.emergency,
+                                    Icons.history,
                                     size: 25.0,
                                     color: Theme.of(context).primaryColorLight,
                                   ),
                                   () => Navigator.pushNamedAndRemoveUntil(
-                                      context, '/', (route) => false),
+                                      context,
+                                      '/historyHome',
+                                      (route) => false),
                                 ),
-                                IconButton(
-                                  onPressed: () {},
-                                  icon: Icon(
-                                    Icons.group,
-                                    size: 25.0,
-                                    color: Theme.of(context).primaryColorLight,
-                                  ),
-                                ),
-                                IconButton(
-                                  onPressed: () {
-                                    Navigator.pushNamedAndRemoveUntil(
-                                        context, '/settings', (route) => false);
-                                  },
-                                  icon: Icon(
-                                    Icons.settings,
-                                    size: 25.0,
-                                    color: Theme.of(context).primaryColorLight,
-                                  ),
-                                ),
+                                // IconButton(
+                                //   onPressed: () {
+                                //     Navigator.pushNamedAndRemoveUntil(
+                                //         context, '', (route) => false);
+                                //   },
+                                //   icon: Icon(
+                                //     Icons.create,
+                                //     size: 25.0,
+                                //     color: Theme.of(context).primaryColorLight,
+                                //   ),
+                                // ),
                               ],
                             ),
                           ),
@@ -229,9 +294,10 @@ class _AddFriendsState extends State<AddFriends> {
                     ),
                   ],
                 ),
-                Reuse.title("Friends", context),
+                Reuse.title("Contacts: ${contacts.length}", context),
+
                 const SizedBox(
-                  height: 5,
+                  height: 10,
                 ),
                 //title ends//
                 (contacts.isEmpty)
@@ -255,24 +321,37 @@ class _AddFriendsState extends State<AddFriends> {
                             //get a particular phone
                             Uint8List? image = contact.avatar;
 
-                            return InkWell(
+                            return GestureDetector(
                               onDoubleTap: () async {
+                                final navContext = Navigator.of(context);
                                 try {
-                                  /*String phoneNumber = contact.phones!
-                                        .elementAt(0)
-                                        .value
-                                        .toString();*/
+                                  // variables
+                                  String phoneNumber = contact.phones!
+                                      .elementAt(0)
+                                      .value
+                                      .toString();
+                                  String contactName = contact.displayName!;
 
+                                  //call the number
                                   await (FlutterPhoneDirectCaller.callNumber(
-                                    contact.phones!
-                                        .elementAt(0)
-                                        .value
-                                        .toString()
-                                        .replaceAllMapped(RegExp(r'^(\+)/|D'),
-                                            (Match m) {
+                                    phoneNumber.replaceAllMapped(
+                                        RegExp(r'^(\+)/|D'), (Match m) {
                                       return m[0] == "+" ? "+" : "";
                                     }),
-                                  )).whenComplete(() => const AddFriends());
+                                  ));
+                                  navContext.pop();
+
+                                  //Add this data to the constructor
+                                  ContactData contactData = ContactData(
+                                    id: int.tryParse(const Uuid().v1()),
+                                    name: contactName,
+                                    contact: phoneNumber,
+                                    date: timeStamp,
+                                  );
+
+                                  // store the data to the database
+                                  await DatabaseHelper.instance
+                                      .insertContactData(contactData);
                                 } on Exception catch (e) {
                                   // Anything else that is an exception
                                   if (kDebugMode) {
@@ -280,42 +359,7 @@ class _AddFriendsState extends State<AddFriends> {
                                   }
                                 }
                               },
-                              onLongPress: () async {
-                                try {
-                                  // var update =
-                                  //     await ContactsService.openExistingContact(
-                                  //         contact);
-                                  // final changUpdate =
-                                  //     await ContactsService.updateContact(
-                                  //         update);
-                                  //
-                                  // setState(() async {
-                                  //   await ContactsService.openContactForm();
-                                  //   update = changUpdate;
-                                  // });
-                                } on FormOperationException catch (e) {
-                                  switch (e.errorCode) {
-                                    case FormOperationErrorCode
-                                        .FORM_COULD_NOT_BE_OPEN:
-                                      break;
-                                    case FormOperationErrorCode
-                                        .FORM_OPERATION_CANCELED:
-                                      if (kDebugMode) {
-                                        print(e.toString());
-                                      }
-                                      break;
-                                    case FormOperationErrorCode
-                                        .FORM_OPERATION_UNKNOWN_ERROR:
-                                      if (kDebugMode) {
-                                        print(e.toString());
-                                      }
-                                      break;
-                                    default:
-                                  }
-                                }
-                              },
                               child: ListTile(
-                                onTap: () async {},
                                 leading: (image != null && image.isNotEmpty)
                                     ? CircleAvatar(
                                         backgroundImage: MemoryImage(image),
@@ -346,67 +390,6 @@ class _AddFriendsState extends State<AddFriends> {
                                             color: Theme.of(context)
                                                 .primaryColorLight),
                                       ),
-                                trailing: SizedBox(
-                                  width: 110,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      SizedBox(
-                                        height: 50,
-                                        width: 50,
-                                        child: IconButton(
-                                          icon: const Icon(
-                                            Icons.share,
-                                            color: Colors.blue,
-                                            size: 20,
-                                          ),
-                                          onPressed: () {
-                                            String nameTemporary = contact
-                                                .displayName
-                                                .toString()
-                                                .trim();
-                                            String phoneTemporary = contact
-                                                .phones!
-                                                .elementAt(0)
-                                                .value
-                                                .toString();
-
-                                            Reuse.display(
-                                                context,
-                                                nameTemporary,
-                                                phoneTemporary,
-                                                '');
-                                          },
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      SizedBox(
-                                        height: 50,
-                                        width: 50,
-                                        child: IconButton(
-                                          icon: const Icon(
-                                            Icons.chat,
-                                            color: Colors.green,
-                                            size: 20,
-                                          ),
-                                          onPressed: () {
-                                            String phoneTemporary = contact
-                                                .phones!
-                                                .elementAt(0)
-                                                .value
-                                                .toString();
-                                            Reuse.openWhatsApp(context,
-                                                phoneNumber: phoneTemporary,
-                                                message: 'Hello ');
-                                          },
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
                                 subtitle: Text(
                                   contact.phones!.isEmpty
                                       ? 'No Phone number'
@@ -419,6 +402,349 @@ class _AddFriendsState extends State<AddFriends> {
                                           .primaryColorLight
                                           .withOpacity(.49)),
                                 ),
+                                trailing: Container(
+                                  width: 30,
+                                  color: Colors.transparent,
+                                  child: SizedBox(
+                                    width: 30,
+                                    child: PopupMenuButton(
+                                      color:
+                                          Theme.of(context).primaryColorLight,
+                                      itemBuilder: (BuildContext context) =>
+                                          <PopupMenuEntry>[
+                                        PopupMenuItem(
+                                          value: 0,
+                                          child: TextButton(
+                                            onPressed: () async {
+                                              final navContext =
+                                                  Navigator.of(context);
+                                              try {
+                                                // variables
+                                                String phoneNumber = contact
+                                                    .phones!
+                                                    .elementAt(0)
+                                                    .value
+                                                    .toString();
+                                                String contactName =
+                                                    contact.displayName!;
+
+                                                //call the number
+                                                await (FlutterPhoneDirectCaller
+                                                    .callNumber(
+                                                  phoneNumber.replaceAllMapped(
+                                                      RegExp(r'^(\+)/|D'),
+                                                      (Match m) {
+                                                    return m[0] == "+"
+                                                        ? "+"
+                                                        : "";
+                                                  }),
+                                                ));
+                                                navContext.pop();
+
+                                                //Add this data to the constructor
+                                                ContactData contactData =
+                                                    ContactData(
+                                                  id: int.tryParse(
+                                                      const Uuid().v1()),
+                                                  name: contactName,
+                                                  contact: phoneNumber,
+                                                  date: timeStamp,
+                                                );
+
+                                                // store the data to the database
+                                                await DatabaseHelper.instance
+                                                    .insertContactData(
+                                                        contactData);
+                                              } on Exception catch (e) {
+                                                // Anything else that is an exception
+                                                if (kDebugMode) {
+                                                  print(
+                                                      'Unknown exception: $e');
+                                                }
+                                              }
+                                            },
+                                            child: Row(
+                                              children: [
+                                                ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          150), // Adjust the radius as needed
+
+                                                  child: SizedBox(
+                                                    height: 30,
+                                                    width: 30,
+                                                    child: SizedBox(
+                                                        width: MediaQuery.of(
+                                                                context)
+                                                            .size
+                                                            .width,
+                                                        height: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .height /
+                                                            3.8,
+                                                        child: const Icon(
+                                                          Icons.call,
+                                                          color: Colors.green,
+                                                        )),
+                                                  ),
+                                                ),
+                                                const SizedBox(
+                                                  width: 10,
+                                                ),
+                                                const Text("Make a call"),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        PopupMenuItem(
+                                          value: 1,
+                                          child: TextButton(
+                                            onPressed: () {
+                                              String nameTemporary = contact
+                                                  .displayName
+                                                  .toString()
+                                                  .trim();
+                                              String phoneTemporary = contact
+                                                  .phones!
+                                                  .elementAt(0)
+                                                  .value
+                                                  .toString();
+
+                                              Reuse.display(
+                                                  context,
+                                                  nameTemporary,
+                                                  phoneTemporary,
+                                                  "Share");
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: Row(
+                                              children: [
+                                                ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          150), // Adjust the radius as needed
+
+                                                  child: SizedBox(
+                                                    height: 30,
+                                                    width: 30,
+                                                    child: SizedBox(
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                              .size
+                                                              .width,
+                                                      height:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .height /
+                                                              3.8,
+                                                      child: Image.asset(
+                                                        'images/share.png',
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                const SizedBox(
+                                                  width: 10,
+                                                ),
+                                                const Text("Share contacts")
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        PopupMenuItem(
+                                          value: 2,
+                                          child: TextButton(
+                                            onPressed: () {
+                                              String nameTemporary = contact
+                                                  .displayName
+                                                  .toString()
+                                                  .trim();
+                                              String phoneTemporary = contact
+                                                  .phones!
+                                                  .elementAt(0)
+                                                  .value
+                                                  .toString();
+
+                                              Reuse.openWhatsApp(context,
+                                                  phoneNumber: phoneTemporary,
+                                                  message: "Hello");
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: Row(
+                                              children: [
+                                                ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          150), // Adjust the radius as needed
+
+                                                  child: SizedBox(
+                                                    height: 30,
+                                                    width: 30,
+                                                    child: SizedBox(
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                              .size
+                                                              .width,
+                                                      height:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .height /
+                                                              3.8,
+                                                      child: Image.asset(
+                                                        'images/whatsapp.png',
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                const SizedBox(
+                                                  width: 10,
+                                                ),
+                                                const Text("Open WhatsApp"),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        PopupMenuItem(
+                                          value: 3,
+                                          child: TextButton(
+                                            onPressed: () {
+                                              showDialog(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return AlertDialog(
+                                                      backgroundColor:
+                                                          Theme.of(context)
+                                                              .primaryColorLight
+                                                              .withOpacity(.9),
+                                                      title: const Text(
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        'Confirm',
+                                                        style: TextStyle(
+                                                            color: Colors.red,
+                                                            fontSize: 20,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w700),
+                                                      ),
+                                                      content: Text(
+                                                        "Delete the contact from the list?",
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: TextStyle(
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .primaryColor),
+                                                      ),
+                                                      actions: <Widget>[
+                                                        Center(
+                                                          child: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              ClipRRect(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            10.0),
+                                                                child:
+                                                                    TextButton(
+                                                                  onPressed:
+                                                                      () {
+                                                                    Navigator.of(
+                                                                            context)
+                                                                        .pop();
+                                                                  },
+                                                                  child: Text(
+                                                                    'No',
+                                                                    style:
+                                                                        TextStyle(
+                                                                      color: Theme.of(
+                                                                              context)
+                                                                          .primaryColor,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              TextButton(
+                                                                onPressed:
+                                                                    () async {
+                                                                  final navContext =
+                                                                      Navigator.of(
+                                                                          context);
+                                                                  //Delete the record
+                                                                  try {
+                                                                    await _deleteContact(
+                                                                        index);
+                                                                    navContext
+                                                                        .pop();
+                                                                  } catch (e) {
+                                                                    logger.e(
+                                                                        "Can't delete");
+                                                                  }
+                                                                },
+                                                                child: Text(
+                                                                  'Yes',
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color: Theme.of(
+                                                                            context)
+                                                                        .primaryColor,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    );
+                                                  });
+                                              _deleteContact(index);
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: Row(
+                                              children: [
+                                                ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          150), // Adjust the radius as needed
+
+                                                  child: SizedBox(
+                                                    height: 30,
+                                                    width: 30,
+                                                    child: SizedBox(
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                              .size
+                                                              .width,
+                                                      height:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .height /
+                                                              3.8,
+                                                      child: const Icon(
+                                                        Icons.delete,
+                                                        color: Colors.red,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                const SizedBox(
+                                                  width: 10,
+                                                ),
+                                                const Text("Delete contact"),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
                               ),
                             );
                           },
@@ -430,86 +756,19 @@ class _AddFriendsState extends State<AddFriends> {
           ),
         ),
       ),
-      floatingActionButton: Row(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      persistentFooterAlignment: AlignmentDirectional.bottomEnd,
+      floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          FloatingActionButton(
-            backgroundColor: Theme.of(context).primaryColor,
-            heroTag: "button_3",
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.horizontal(
-                left: Radius.circular(30),
-                right: Radius.circular(30),
-              ),
-            ),
-            onPressed: () async {
-              try {
-                String phoneNumber = "";
-                final url = 'tel:$phoneNumber';
-                // if () {
-                //   await launch(url);
-                // } else {
-                //   throw 'Could not launch $url';
-                // }
-                FlutterPhoneDirectCaller.callNumber(url);
-              } on FormOperationException catch (e) {
-                switch (e.errorCode) {
-                  case FormOperationErrorCode.FORM_COULD_NOT_BE_OPEN:
-                    break;
-                  case FormOperationErrorCode.FORM_OPERATION_CANCELED:
-                    if (kDebugMode) {
-                      print(e.toString());
-                    }
-                    break;
-                  case FormOperationErrorCode.FORM_OPERATION_UNKNOWN_ERROR:
-                    if (kDebugMode) {
-                      print(e.toString());
-                    }
-                    break;
-                  default:
-                }
-              }
-            },
-            child: Icon(
-              Icons.call,
-              color: Theme.of(context).primaryColorLight,
-            ),
-          ),
-          Column(
+          Row(
             mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              SizedBox(
-                height: 40,
-                width: 40,
-                child: FloatingActionButton(
-                  backgroundColor: Theme.of(context).primaryColor,
-                  heroTag: "button_1",
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.horizontal(
-                      left: Radius.circular(30),
-                      right: Radius.circular(30),
-                    ),
-                  ),
-                  onPressed: () async {
-                    //get the contacts again
-                    setState(() {
-                      //clear the textBox
-                      search.clear();
-                    });
-                    //call the list
-                    await ContactsService.getContacts();
-                  },
-                  tooltip: 'refresh contact',
-                  child: Icon(Icons.refresh,
-                      color: Theme.of(context).primaryColorLight),
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
               FloatingActionButton(
                 backgroundColor: Theme.of(context).primaryColor,
-                heroTag: "button_2",
+                heroTag: "button_9",
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.horizontal(
                     left: Radius.circular(30),
@@ -526,7 +785,7 @@ class _AddFriendsState extends State<AddFriends> {
                         (await ContactsService.getContacts()).toList();
                     setState(() {
                       //populate the list and update the UI
-                      contacts = temporaryContacts;
+                      // contacts = temporaryContacts;
                     });
                   } on FormOperationException catch (e) {
                     switch (e.errorCode) {
@@ -551,7 +810,47 @@ class _AddFriendsState extends State<AddFriends> {
                   color: Theme.of(context).primaryColorLight,
                 ),
               ),
+              const SizedBox(
+                width: 8,
+              ),
+              SizedBox(
+                child: FloatingActionButton(
+                  backgroundColor: Theme.of(context).primaryColor,
+                  heroTag: "button_1",
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.horizontal(
+                      left: Radius.circular(30),
+                      right: Radius.circular(30),
+                    ),
+                  ),
+                  onPressed: () async {
+                    //get the contacts again
+                    setState(() {
+                      //clear the textBox
+                      search.clear();
+                    });
+                    //call the list
+                    await ContactsService.getContacts();
+                    Fluttertoast.showToast(
+                        gravity: ToastGravity.TOP,
+                        backgroundColor: Colors.indigo,
+                        msg: "Reloaded");
+                  },
+                  tooltip: 'Refresh contact',
+                  child: Icon(Icons.refresh,
+                      color: Theme.of(context).primaryColorLight),
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              const SizedBox(
+                width: 8,
+              ),
             ],
+          ),
+          SizedBox(
+            height: 60,
           ),
         ],
       ), // This trailing comma makes auto-formatting nicer for build methods.
@@ -595,4 +894,88 @@ class _AddFriendsState extends State<AddFriends> {
     ));
     //__________________//
   }
+}
+
+popButtons(String nameTemporary, phoneTemporary) {
+  return PopupMenuButton(
+    itemBuilder: (BuildContext context) => <PopupMenuEntry>[
+      PopupMenuItem(
+        value: 0,
+        child: TextButton(
+          onPressed: () {},
+          child: Row(
+            children: [
+              ClipRRect(
+                borderRadius:
+                    BorderRadius.circular(150), // Adjust the radius as needed
+
+                child: SizedBox(
+                  height: 30,
+                  width: 30,
+                  child: GestureDetector(
+                    onTap: () {
+                      Reuse.display(
+                          context, nameTemporary, phoneTemporary, "Share");
+                    },
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height / 3.8,
+                      child: Image.asset(
+                        'images/share.png',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              const Text("Share contacts")
+            ],
+          ),
+        ),
+      ),
+      PopupMenuItem(
+        value: 1,
+        child: TextButton(
+          onPressed: () {
+            Reuse.openWhatsApp(context,
+                phoneNumber: phoneTemporary, message: "Hello");
+          },
+          child: Row(
+            children: [
+              const Text("Open whatsApp"),
+              ClipRRect(
+                borderRadius:
+                    BorderRadius.circular(150), // Adjust the radius as needed
+
+                child: SizedBox(
+                  height: 30,
+                  width: 30,
+                  child: GestureDetector(
+                    onTap: () {
+                      Reuse.display(context, nameTemporary, phoneTemporary, '');
+                    },
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height / 3.8,
+                      child: Image.asset(
+                        'images/whatsapp.png',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              Text("Share contacts"),
+            ],
+          ),
+        ),
+      ),
+    ],
+  );
 }

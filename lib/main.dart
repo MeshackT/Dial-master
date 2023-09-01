@@ -1,12 +1,15 @@
+import 'package:dial/HistoryHome.dart';
 import 'package:dial/MoreServices.dart';
 import 'package:dial/ReusableCode.dart';
 import 'package:dial/Settings.dart';
 import 'package:dial/addFriends.dart';
 import 'package:dial/feedback%20class/EmailTemplate.dart';
 import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart';
 
+import 'DialPadKeys.dart';
+import 'Navigation.dart';
 import 'landingScreen.dart';
+import 'location/add_place.dart';
 
 Reuse objReuse = Reuse();
 
@@ -20,43 +23,10 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  /*get permission*/
-  Future<void> getPermission() async {
-    await Permission.phone.request();
-    await Permission.photos.request();
-    await Permission.contacts.request();
-
-    // You can request multiple permissions at once.
-    Map<Permission, PermissionStatus> statuses = await [
-      Permission.contacts,
-      Permission.photos,
-      Permission.phone,
-
-      //add more permission to request here.
-    ].request();
-
-    if (statuses[Permission.contacts]!.isDenied) {
-      //check each permission status after.
-      //showToast("Permission Denied");
-      Reuse.callToast("Permission Denied");
-    } else if (statuses[Permission.photos]!.isDenied) {
-      //check each permission status after.
-      //showToast("Permission Denied");
-      //Reuse.callToast("Permission Denied");
-    } else if (statuses[Permission.phone]!.isDenied) {
-      //check each permission status after.
-      //showToast("Permission Denied");
-      Reuse.callToast("Permission Denied");
-    } else {
-      //showToast("Permission Granted");
-      Reuse.callToast("Permission Granted");
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Speed Dial',
+      title: 'Dial',
       theme: ThemeData(
         primarySwatch: Colors.indigo,
         primaryColorDark: Colors.deepPurple,
@@ -65,21 +35,71 @@ class _MyAppState extends State<MyApp> {
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       debugShowCheckedModeBanner: false,
+      // home: Navigation(),
       initialRoute: '/',
       routes: {
         // When navigating to the "/" route, build the FirstScreen(Home) widget.
-        '/': (context) => const MyHomePage(),
+        '/': (context) => const Navigation(),
+        '/landingScreen': (context) => const MyHomePage(),
         '/addFriends': (context) => const AddFriends(),
         '/settings': (context) => const Settings(),
         '/emailTemplate': (context) => const EmailTemplate(),
         '/moreServices': (context) => const MoreServices(),
+        '/contactForm': (context) => const ContactForm(),
+        '/historyHome': (context) => const HistoryHome(),
+        // '/createAContactButton': (context) => const CreateAContactButton(),
+        '/dialPadKeys': (context) => const DialPadKeys(),
+        '/addLocation': (context) => const AddLocation(),
       },
     );
   }
-
-  @override
-  void initState() {
-    getPermission();
-    super.initState();
-  }
 }
+//   void showPermissionDialog() {
+//     showCupertinoDialog(
+//       context: context,
+//       builder: (BuildContext context) {
+//         final alertBox = Navigator.of(context);
+//
+//         return AlertDialog(
+//           title: Text(
+//             "Permission Required",
+//             style: TextStyle(
+//               fontSize: 14,
+//               fontWeight: FontWeight.w800,
+//               color: Theme.of(context).primaryColor,
+//             ),
+//           ),
+//           content: Text(
+//             "This app requires contacts and phone permissions to function.",
+//             style: TextStyle(
+//               color: Theme.of(context).primaryColor,
+//               fontWeight: FontWeight.normal,
+//               fontSize: 12,
+//             ),
+//           ),
+//           actions: [
+//             ClipRRect(
+//               borderRadius:
+//                   BorderRadius.circular(150), // Adjust the radius as needed
+//               child: Container(
+//                 color: Theme.of(context).primaryColor,
+//                 child: TextButton(
+//                   onPressed: () async {
+//                     await getPermission();
+//                     alertBox.pop();
+//                   },
+//                   child: Text(
+//                     "Get Permission",
+//                     style: TextStyle(
+//                         fontSize: 14,
+//                         color: Theme.of(context).primaryColorLight),
+//                   ),
+//                 ),
+//               ),
+//             ),
+//           ],
+//         );
+//       },
+//     );
+//   }
+// }
