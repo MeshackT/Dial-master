@@ -1,5 +1,6 @@
 name: dial
-description: A new Flutter project.
+description: Updated version 2
+#changed 2 for version name
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -15,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.3.0
+version: 2.0.5
 
 environment:
   sdk: ">=2.17.5 <3.0.0"
@@ -94,7 +95,16 @@ dependencies:
   flutter_share: ^2.0.0
 
   #location
-#  location: ^5.0.3
+  location: ^4.0.0
+  riverpod: ^2.3.7
+  flutter_riverpod: ^2.3.7
+  google_maps_flutter: ^2.3.0
+  firebase_messaging: ^14.6.7
+  firebase_core: ^2.15.1
+  firebase_auth: ^4.9.0
+  cloud_firestore: ^4.9.1
+  flutter_local_notifications: ^15.1.1
+  shared_preferences: ^2.0.0
 
 
 dev_dependencies:

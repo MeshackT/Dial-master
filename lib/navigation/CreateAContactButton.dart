@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:contacts_service/contacts_service.dart';
 import 'package:dial/DBModel/DatabaseHelper.dart';
 import 'package:dial/ReusableCode.dart';
@@ -22,6 +24,19 @@ class _CreateAContactButtonState extends State<CreateAContactButton> {
   final bool hideButton = false;
   final DatabaseHelperTwo _databaseHelperTwo = DatabaseHelperTwo.instance;
 
+  List<Color> itemColors = [];
+
+  Random random = Random();
+
+  Color generateRandomColor() {
+    return Color.fromARGB(
+      255,
+      random.nextInt(256),
+      random.nextInt(256),
+      random.nextInt(256),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -31,6 +46,7 @@ class _CreateAContactButtonState extends State<CreateAContactButton> {
             return Scaffold(
               extendBodyBehindAppBar: true,
               extendBody: true,
+              backgroundColor: const Color(0xFF072456),
               body: Container(
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
@@ -76,7 +92,8 @@ class _CreateAContactButtonState extends State<CreateAContactButton> {
                       ),
                       SizedBox(
                         child: FloatingActionButton(
-                          backgroundColor: Theme.of(context).primaryColor,
+                          backgroundColor:
+                              Theme.of(context).primaryColor.withOpacity(.2),
                           heroTag: "button_1",
                           shape: const RoundedRectangleBorder(
                             borderRadius: BorderRadius.horizontal(
@@ -122,10 +139,10 @@ class _CreateAContactButtonState extends State<CreateAContactButton> {
             );
           } else if (snapshot.data.length <= 0) {
             return Scaffold(
-              // extendBodyBehindAppBar: true,
-              // extendBody: true,
+              extendBodyBehindAppBar: true,
+              extendBody: true,
+              backgroundColor: const Color(0xFF072456),
               body: Container(
-                padding: const EdgeInsets.only(top: 20),
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
                       colors: [Color(0xFF072456), Color(0xff000000)],
@@ -141,8 +158,10 @@ class _CreateAContactButtonState extends State<CreateAContactButton> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
+                      Reuse.spaceBetween(),
+                      Reuse.spaceBetween(),
                       Reuse.headerText(
-                          context, "My List", "My Create contact list"),
+                          context, "My List", "My Created contact list"),
                       Reuse.spaceBetween(),
                       Reuse.spaceBetween(),
                       Reuse.spaceBetween(),
@@ -156,7 +175,7 @@ class _CreateAContactButtonState extends State<CreateAContactButton> {
                         child: Center(
                           child: Image.asset(
                             "images/ic_launcher.png",
-                            height: 200,
+                            height: 150,
                           ),
                         ),
                       ),
@@ -164,7 +183,6 @@ class _CreateAContactButtonState extends State<CreateAContactButton> {
                   ),
                 ),
               ),
-
               floatingActionButtonLocation:
                   FloatingActionButtonLocation.centerFloat,
               persistentFooterAlignment: AlignmentDirectional.bottomEnd,
@@ -181,7 +199,8 @@ class _CreateAContactButtonState extends State<CreateAContactButton> {
                       ),
                       SizedBox(
                         child: FloatingActionButton(
-                          backgroundColor: Theme.of(context).primaryColor,
+                          backgroundColor:
+                              Theme.of(context).primaryColor.withOpacity(.2),
                           heroTag: "button_1",
                           shape: const RoundedRectangleBorder(
                             borderRadius: BorderRadius.horizontal(
@@ -287,7 +306,9 @@ class _CreateAContactButtonState extends State<CreateAContactButton> {
                               child: Container(
                                 width: MediaQuery.of(context).size.width / 4,
                                 height: MediaQuery.of(context).size.height / 18,
-                                color: Theme.of(context).primaryColor,
+                                color: Theme.of(context)
+                                    .primaryColor
+                                    .withOpacity(.2),
                                 child: TextButton.icon(
                                   onPressed: () async {
                                     // showThis();
@@ -392,86 +413,61 @@ class _CreateAContactButtonState extends State<CreateAContactButton> {
                         ),
                         Expanded(
                           flex: 1,
-                          child: Align(
-                            alignment: Alignment.topCenter,
-                            child: GridView.builder(
-                              // physics: ScrollPhysics,
-                              physics:
-                                  const BouncingScrollPhysics(), // Add the physics you want
-                              scrollDirection: Axis.vertical,
-                              padding: const EdgeInsets.only(bottom: 130.0),
-                              itemCount: snapshot.data.length,
-                              itemBuilder: (context, index) {
-                                final scannedData = snapshot.data![index];
+                          child: GridView.builder(
+                            // physics: ScrollPhysics,
+                            physics:
+                                const BouncingScrollPhysics(), // Add the physics you want
+                            scrollDirection: Axis.vertical,
+                            padding: const EdgeInsets.only(bottom: 130.0),
+                            itemCount: snapshot.data.length,
 
-                                return GestureDetector(
-                                  onLongPress: () {
-                                    showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return AlertDialog(
-                                            backgroundColor: Theme.of(context)
-                                                .primaryColorLight
-                                                .withOpacity(.9),
-                                            title: const Text(
-                                              textAlign: TextAlign.center,
-                                              'Confirm',
-                                              style: TextStyle(
-                                                  color: Colors.red,
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.w700),
-                                            ),
-                                            content: Text(
-                                              "Remove the contact from the list?",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  color: Theme.of(context)
-                                                      .primaryColor),
-                                            ),
-                                            actions: <Widget>[
-                                              Center(
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    ClipRRect(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10.0),
-                                                      child: TextButton(
-                                                        onPressed: () {
-                                                          Navigator.of(context)
-                                                              .pop();
-                                                        },
-                                                        child: Text(
-                                                          'No',
-                                                          style: TextStyle(
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .primaryColor,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    TextButton(
-                                                      onPressed: () async {
-                                                        //Delete the record
-                                                        try {
-                                                          // Call the delete function here
-                                                          await _databaseHelperTwo
-                                                              .deletingContactData(
-                                                                  scannedData
-                                                                      .id);
-                                                          setState(() {});
-                                                          Navigator.of(context)
-                                                              .pop();
-                                                        } catch (e) {
-                                                          logger.e(
-                                                              "Can't delete");
-                                                        }
+                            itemBuilder: (context, index) {
+                              final scannedData = snapshot.data![index];
+
+                              for (int i = 0; i <= snapshot.data.length; i++) {
+                                itemColors.add(generateRandomColor());
+                              }
+                              return GestureDetector(
+                                onLongPress: () {
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          backgroundColor: Theme.of(context)
+                                              .primaryColorLight
+                                              .withOpacity(.9),
+                                          title: const Text(
+                                            textAlign: TextAlign.center,
+                                            'Confirm',
+                                            style: TextStyle(
+                                                color: Colors.red,
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.w700),
+                                          ),
+                                          content: Text(
+                                            "Remove the contact from the list?",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: Theme.of(context)
+                                                    .primaryColor),
+                                          ),
+                                          actions: <Widget>[
+                                            Center(
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10.0),
+                                                    child: TextButton(
+                                                      onPressed: () {
+                                                        Navigator.of(context)
+                                                            .pop();
                                                       },
                                                       child: Text(
-                                                        'Yes',
+                                                        'No',
                                                         style: TextStyle(
                                                           color:
                                                               Theme.of(context)
@@ -479,89 +475,110 @@ class _CreateAContactButtonState extends State<CreateAContactButton> {
                                                         ),
                                                       ),
                                                     ),
-                                                  ],
-                                                ),
+                                                  ),
+                                                  TextButton(
+                                                    onPressed: () async {
+                                                      //Delete the record
+                                                      try {
+                                                        // Call the delete function here
+                                                        await _databaseHelperTwo
+                                                            .deletingContactData(
+                                                                scannedData.id);
+                                                        setState(() {});
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      } catch (e) {
+                                                        logger
+                                                            .e("Can't delete");
+                                                      }
+                                                    },
+                                                    child: Text(
+                                                      'Yes',
+                                                      style: TextStyle(
+                                                        color: Theme.of(context)
+                                                            .primaryColor,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
-                                            ],
-                                          );
-                                        });
-                                  },
-                                  onTap: () async {
-                                    try {
-                                      final DateTime timeStamp = DateTime.now();
+                                            ),
+                                          ],
+                                        );
+                                      });
+                                },
+                                onTap: () async {
+                                  try {
+                                    final DateTime timeStamp = DateTime.now();
 
-                                      String phoneNumber = scannedData.contact;
+                                    String phoneNumber = scannedData.contact;
 
-                                      //call the number
-                                      await (FlutterPhoneDirectCaller
-                                          .callNumber(
-                                        phoneNumber.replaceAllMapped(
-                                            RegExp(r'^(\+)/|D'), (Match m) {
-                                          return m[0] == "+" ? "+" : "";
-                                        }),
-                                      ));
-                                      //Add this data to the constructor
-                                      ContactData contactData = ContactData(
-                                        id: int.tryParse(const Uuid().v1()),
-                                        name: scannedData.name,
-                                        contact: scannedData.contact,
-                                        date: timeStamp,
-                                      );
+                                    //call the number
+                                    await (FlutterPhoneDirectCaller.callNumber(
+                                      phoneNumber.replaceAllMapped(
+                                          RegExp(r'^(\+)/|D'), (Match m) {
+                                        return m[0] == "+" ? "+" : "";
+                                      }),
+                                    ));
+                                    //Add this data to the constructor
+                                    ContactData contactData = ContactData(
+                                      id: int.tryParse(const Uuid().v1()),
+                                      name: scannedData.name,
+                                      contact: scannedData.contact,
+                                      date: timeStamp,
+                                    );
 
-                                      // store the data to the database
-                                      await DatabaseHelper.instance
-                                          .insertContactData(contactData);
-                                    } on Exception catch (e) {
-                                      // Anything else that is an exception
-                                      if (kDebugMode) {
-                                        print('Unknown exception: $e');
-                                      }
+                                    // store the data to the database
+                                    await DatabaseHelper.instance
+                                        .insertContactData(contactData);
+                                  } on Exception catch (e) {
+                                    // Anything else that is an exception
+                                    if (kDebugMode) {
+                                      print('Unknown exception: $e');
                                     }
-                                  },
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(15.0),
-                                    child: Container(
-                                      margin: const EdgeInsets.symmetric(
-                                          vertical: 15, horizontal: 15),
-                                      color: Theme.of(context)
-                                          .primaryColor
-                                          .withOpacity(.6),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Icon(
-                                            Icons.person,
+                                  }
+                                },
+                                child: Container(
+                                  margin: const EdgeInsets.symmetric(
+                                      vertical: 25, horizontal: 25),
+                                  color: Theme.of(context)
+                                      .primaryColor
+                                      .withOpacity(.2),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.person,
+                                        color:
+                                            itemColors[index].withOpacity(.6),
+                                        // color:
+                                        //     Theme.of(context).primaryColorLight,
+                                        size: 40,
+                                      ),
+                                      SelectableText(
+                                        scannedData.name!,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w400,
                                             color: Theme.of(context)
                                                 .primaryColorLight,
-                                            size: 40,
-                                          ),
-                                          SelectableText(
-                                            scannedData.name!,
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w400,
-                                                color: Theme.of(context)
-                                                    .primaryColorLight,
-                                                fontSize: 10),
-                                          ),
-                                          SelectableText(
-                                            scannedData.contact!,
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w400,
-                                                color: Theme.of(context)
-                                                    .primaryColorLight,
-                                                fontSize: 10),
-                                          ),
-                                        ],
+                                            fontSize: 10),
                                       ),
-                                    ),
+                                      SelectableText(
+                                        scannedData.contact!,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                            color: Theme.of(context)
+                                                .primaryColorLight,
+                                            fontSize: 10),
+                                      ),
+                                    ],
                                   ),
-                                );
-                              },
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                              ),
+                                ),
+                              );
+                            },
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
                             ),
                           ),
                         ),
@@ -589,7 +606,8 @@ class _CreateAContactButtonState extends State<CreateAContactButton> {
                       ),
                       SizedBox(
                         child: FloatingActionButton(
-                          backgroundColor: Theme.of(context).primaryColor,
+                          backgroundColor:
+                              Theme.of(context).primaryColor.withOpacity(.2),
                           heroTag: "button_1",
                           shape: const RoundedRectangleBorder(
                             borderRadius: BorderRadius.horizontal(
@@ -639,7 +657,7 @@ Future<dynamic> createMyContact(BuildContext context) {
         leading: IconButton(
           icon: Icon(
             Icons.cancel,
-            color: Theme.of(context).primaryColor,
+            color: Theme.of(context).primaryColorLight,
             size: 30,
           ),
           onPressed: () {
@@ -647,17 +665,20 @@ Future<dynamic> createMyContact(BuildContext context) {
                 .pushNamedAndRemoveUntil('/', (route) => false);
           },
         ),
-        backgroundColor: Theme.of(context).primaryColorLight,
-        title: Text(
-          "",
-          style: textStyleText.copyWith(
-              color: Theme.of(context).primaryColorLight, fontSize: 16),
-        ),
+        backgroundColor: Colors.transparent,
       ),
-      backgroundColor: Theme.of(context).primaryColorLight,
+      extendBodyBehindAppBar: true,
+      extendBody: true,
+      backgroundColor: const Color(0xFF072456),
       body: SafeArea(
         child: SingleChildScrollView(
-          child: SizedBox(
+          child: Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                  colors: [Color(0xFF072456), Color(0xff000000)],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter),
+            ),
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
             child: Padding(
@@ -672,171 +693,148 @@ Future<dynamic> createMyContact(BuildContext context) {
                       context, "Create", "Add the contact details"),
                   Reuse.spaceBetween(),
                   Reuse.spaceBetween(),
-                  SizedBox(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 25.0, vertical: 3),
-                          child: Column(children: [
-                            TextFormField(
-                              controller: nameOfContact,
-                              maxLines: 1,
-                              keyboardType: TextInputType.text,
-                              decoration: textInputDecoration.copyWith(
-                                  border: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Theme.of(context).primaryColor,
-                                        width: 2),
-                                    borderRadius: BorderRadius.circular(8),
+                  SingleChildScrollView(
+                    child: SizedBox(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 25.0, vertical: 3),
+                            child: Column(children: [
+                              TextFormField(
+                                controller: nameOfContact,
+                                maxLines: 1,
+                                keyboardType: TextInputType.text,
+                                decoration: textInputDecoration1.copyWith(
+                                  label: Text(
+                                    'Enter a name',
+                                    style: textStyleText.copyWith(
+                                        fontSize: 12,
+                                        color: Theme.of(context)
+                                            .primaryColorLight),
                                   ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Theme.of(context).primaryColor,
-                                        width: 2),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Theme.of(context).primaryColor,
-                                        width: 2),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  hintText: "Your name here",
+                                  hintText: "Enter a name",
                                   hintStyle: textStyleText.copyWith(
-                                      fontWeight: FontWeight.w800,
-                                      color: Theme.of(context)
-                                          .primaryColor
-                                          .withOpacity(.5)),
-                                  fillColor:
-                                      Theme.of(context).primaryColorLight),
-                              style: textStyleText.copyWith(
-                                color: Theme.of(context).primaryColor,
+                                      color:
+                                          Theme.of(context).primaryColorLight),
+                                ),
+                                style: textStyleText.copyWith(
+                                    fontSize: 12,
+                                    color: Theme.of(context).primaryColorLight),
+                                textAlign: TextAlign.center,
+                                autocorrect: true,
+                                textAlignVertical: TextAlignVertical.center,
+                                onSaved: (value) {
+                                  //Do something with the user input.
+                                  nameOfContact.text = value!;
+                                },
                               ),
-                              textAlign: TextAlign.center,
-                              autocorrect: true,
-                              textAlignVertical: TextAlignVertical.center,
-                              onSaved: (value) {
-                                //Do something with the user input.
-                                nameOfContact.text = value!;
-                              },
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            TextFormField(
-                              controller: contactNumber,
-                              maxLines: 1,
-                              keyboardType: TextInputType.number,
-                              decoration: textInputDecoration.copyWith(
-                                  hintText: "Your contact here",
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              TextFormField(
+                                controller: contactNumber,
+                                maxLines: 1,
+                                keyboardType: TextInputType.number,
+                                decoration: textInputDecoration1.copyWith(
+                                  label: Text(
+                                    'Enter a number',
+                                    style: textStyleText.copyWith(
+                                        fontSize: 12,
+                                        color: Theme.of(context)
+                                            .primaryColorLight),
+                                  ),
+                                  hintText: "Number",
                                   hintStyle: textStyleText.copyWith(
-                                    fontWeight: FontWeight.w800,
-                                    color: Theme.of(context)
-                                        .primaryColor
-                                        .withOpacity(.5),
-                                  ),
-                                  border: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Theme.of(context).primaryColor,
-                                        width: 2),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Theme.of(context).primaryColor,
-                                        width: 2),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Theme.of(context).primaryColor,
-                                        width: 2),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  fillColor:
-                                      Theme.of(context).primaryColorLight),
-                              style: textStyleText.copyWith(
-                                color: Theme.of(context).primaryColor,
+                                      color:
+                                          Theme.of(context).primaryColorLight),
+                                ),
+                                style: textStyleText.copyWith(
+                                    fontSize: 12,
+                                    color: Theme.of(context).primaryColorLight),
+                                textAlign: TextAlign.center,
+                                autocorrect: true,
+                                textAlignVertical: TextAlignVertical.center,
+                                onSaved: (value) {
+                                  //Do something with the user input.
+                                  contactNumber.text = value!;
+                                },
                               ),
-                              textAlign: TextAlign.center,
-                              autocorrect: true,
-                              textAlignVertical: TextAlignVertical.center,
-                              onSaved: (value) {
-                                //Do something with the user input.
-                                contactNumber.text = value!;
-                              },
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 10),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  OutlinedButton(
-                                    onPressed: () async {
-                                      if (nameOfContact.text.isEmpty ||
-                                          contactNumber.text.isEmpty) {
-                                        Reuse.callSnack(
-                                            context, "Insert contact details");
-                                      } else {
-                                        final DateTime timeStamp =
-                                            DateTime.now();
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 10),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    OutlinedButton(
+                                      onPressed: () async {
+                                        if (nameOfContact.text.isEmpty ||
+                                            contactNumber.text.isEmpty) {
+                                          Reuse.callSnack(context,
+                                              "Insert contact details");
+                                        } else {
+                                          final DateTime timeStamp =
+                                              DateTime.now();
 
-                                        //add the data to the table
-                                        ContactData contactData = ContactData(
-                                          id: int.tryParse(const Uuid().v1()),
-                                          name: nameOfContact.text
-                                              .trim()
-                                              .toString(),
-                                          contact: contactNumber.text
-                                              .trim()
-                                              .toString(),
-                                          date: timeStamp,
-                                        );
+                                          //add the data to the table
+                                          ContactData contactData = ContactData(
+                                            id: int.tryParse(const Uuid().v1()),
+                                            name: nameOfContact.text
+                                                .trim()
+                                                .toString(),
+                                            contact: contactNumber.text
+                                                .trim()
+                                                .toString(),
+                                            date: timeStamp,
+                                          );
 
-                                        DatabaseHelperTwo.instance
-                                            .insertContactData(contactData);
-                                        DatabaseHelperTwo.instance
-                                            .getContactList();
+                                          DatabaseHelperTwo.instance
+                                              .insertContactData(contactData);
+                                          DatabaseHelperTwo.instance
+                                              .getContactList();
 
-                                        Fluttertoast.showToast(
-                                            backgroundColor:
-                                                Theme.of(context).primaryColor,
-                                            msg: "Contact added to your list");
-                                      }
-                                      contactNumber.clear();
-                                      nameOfContact.clear();
-                                    },
-                                    style: buttonRound.copyWith(
-                                        backgroundColor:
-                                            MaterialStateProperty.all<Color>(
-                                                Theme.of(context)
-                                                    .primaryColorLight)),
-                                    child: Text(
-                                      "Save",
-                                      style: TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold,
-                                        color: Theme.of(context).primaryColor,
+                                          Fluttertoast.showToast(
+                                              backgroundColor: Theme.of(context)
+                                                  .primaryColor,
+                                              msg:
+                                                  "Contact added to your list");
+                                        }
+                                        contactNumber.clear();
+                                        nameOfContact.clear();
+                                      },
+                                      style: buttonRound.copyWith(
+                                          backgroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  Theme.of(context)
+                                                      .primaryColor
+                                                      .withOpacity(.7))),
+                                      child: Text(
+                                        "Save",
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.normal,
+                                          color: Theme.of(context)
+                                              .primaryColorLight,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
-                            Reuse.spaceBetween(),
-                          ]),
-                        ),
-                      ],
+                              Reuse.spaceBetween(),
+                            ]),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],

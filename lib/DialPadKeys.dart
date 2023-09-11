@@ -23,12 +23,12 @@ class _DialPadKeysState extends State<DialPadKeys> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).primaryColorLight,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
           icon: Icon(
             Icons.cancel,
-            color: Theme.of(context).primaryColor,
+            color: Theme.of(context).primaryColorLight,
             size: 30,
           ),
           onPressed: () {
@@ -39,27 +39,26 @@ class _DialPadKeysState extends State<DialPadKeys> {
       ),
       extendBodyBehindAppBar: true,
       extendBody: true,
-      backgroundColor: const Color(0xffffffff),
+      backgroundColor: const Color(0xFF072456),
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Container(
-            // decoration: const BoxDecoration(
-            //   gradient: LinearGradient(
-            //       colors: [Color(0xFF072456), Color(0xff000000)],
-            //       begin: Alignment.topCenter,
-            //       end: Alignment.bottomCenter),
-            // ),
-            color: Theme.of(context).primaryColorLight,
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            child: SingleChildScrollView(
-              child: Container(
-                color: Theme.of(context).primaryColorLight,
-                width: MediaQuery.of(context).size.width,
-                margin: const EdgeInsets.all(20),
-                padding: const EdgeInsets.all(10),
+        child: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+                colors: [Color(0xFF072456), Color(0xff000000)],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter),
+          ),
+          // color: Theme.of(context).primaryColorLight,
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 100),
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: SingleChildScrollView(
+                //correct
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const SizedBox(
@@ -67,7 +66,7 @@ class _DialPadKeysState extends State<DialPadKeys> {
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                      // crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
                           margin: const EdgeInsets.only(bottom: 20),
@@ -75,14 +74,16 @@ class _DialPadKeysState extends State<DialPadKeys> {
                           width: MediaQuery.of(context).size.width / 1.5,
                           child: TextField(
                             style: TextStyle(
-                                color: Theme.of(context).primaryColor,
+                                color: Theme.of(context).primaryColorLight,
                                 fontWeight: FontWeight.w600),
                             decoration: InputDecoration(
-                              fillColor: Theme.of(context).primaryColorLight,
+                              fillColor: Colors.transparent,
                               filled: true,
                               hintText: ' ',
                               hintStyle: TextStyle(
-                                color: Theme.of(context).primaryColor,
+                                color: Theme.of(context)
+                                    .primaryColor
+                                    .withOpacity(.7),
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -92,7 +93,7 @@ class _DialPadKeysState extends State<DialPadKeys> {
                             readOnly: true,
                             textAlign: TextAlign.center,
                             cursorWidth: 1,
-                            cursorColor: Theme.of(context).primaryColor,
+                            cursorColor: Theme.of(context).primaryColorLight,
                             controller: numbers,
                             onChanged: (val) {
                               setState(() {
@@ -113,11 +114,11 @@ class _DialPadKeysState extends State<DialPadKeys> {
                       height: 15,
                     ),
                     Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      // crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                          // crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             buttonNumber("1", () => _handleButtonPress("1")),
@@ -129,7 +130,7 @@ class _DialPadKeysState extends State<DialPadKeys> {
                           height: 15,
                         ),
                         Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                          // crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             buttonNumber("4", () => _handleButtonPress("4")),
@@ -141,7 +142,7 @@ class _DialPadKeysState extends State<DialPadKeys> {
                           height: 15,
                         ),
                         Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                          // crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             buttonNumber("7", () => _handleButtonPress("7")),
@@ -153,7 +154,7 @@ class _DialPadKeysState extends State<DialPadKeys> {
                           height: 15,
                         ),
                         Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                          // crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             buttonNumber("*", () => _handleButtonPress("*")),
@@ -169,8 +170,8 @@ class _DialPadKeysState extends State<DialPadKeys> {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(50.0),
                       child: Container(
-                        width: 80,
-                        height: 80,
+                        width: 60,
+                        height: 60,
                         color: Colors.green,
                         child: IconButton(
                           onPressed: () {
@@ -231,14 +232,17 @@ class _DialPadKeysState extends State<DialPadKeys> {
     return ClipRRect(
       borderRadius: BorderRadius.circular(50.0),
       child: Container(
-        width: 80,
-        height: 80,
-        color: Colors.grey.shade300,
+        width: 65,
+        height: 65,
+        color: Theme.of(context).primaryColor.withOpacity(.02),
         child: TextButton(
           onPressed: onPress,
           child: Text(
             number,
-            style: TextStyle(fontWeight: FontWeight.w800, fontSize: 14),
+            style: TextStyle(
+                fontWeight: FontWeight.w800,
+                fontSize: 20,
+                color: Theme.of(context).primaryColorLight),
           ),
         ),
       ),

@@ -1,19 +1,38 @@
 import 'package:dial/HistoryHome.dart';
-import 'package:dial/MoreServices.dart';
 import 'package:dial/ReusableCode.dart';
 import 'package:dial/Settings.dart';
-import 'package:dial/addFriends.dart';
 import 'package:dial/feedback%20class/EmailTemplate.dart';
+import 'package:dial/firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'DialPadKeys.dart';
-import 'Navigation.dart';
-import 'landingScreen.dart';
-import 'location/add_place.dart';
+import 'Notifications/local_notifications.dart';
+import 'navigation/MoreServices.dart';
+import 'navigation/Navigation.dart';
+import 'navigation/addFriends.dart';
+import 'navigation/landingScreen.dart';
 
 Reuse objReuse = Reuse();
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {}
 
-void main() => runApp(const MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  runApp(
+    const ProviderScope(
+      child: MyApp(),
+    ),
+  );
+}
+
+final navigatorKey = GlobalKey<NavigatorState>();
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -23,9 +42,20 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  // LocalNotificationService localNotificationService =
+  // LocalNotificationService();
+
+  @override
+  void initState() {
+    super.initState();
+    LocalNotificationService.initialize();
+    LocalNotificationService.subscribeToTopicDevice("allToReceive");
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      key: navigatorKey,
       title: 'Dial',
       theme: ThemeData(
         primarySwatch: Colors.indigo,
@@ -49,57 +79,8 @@ class _MyAppState extends State<MyApp> {
         '/historyHome': (context) => const HistoryHome(),
         // '/createAContactButton': (context) => const CreateAContactButton(),
         '/dialPadKeys': (context) => const DialPadKeys(),
-        '/addLocation': (context) => const AddLocation(),
+        // '/addLocation': (context) => const AddLocation(),
       },
     );
   }
 }
-//   void showPermissionDialog() {
-//     showCupertinoDialog(
-//       context: context,
-//       builder: (BuildContext context) {
-//         final alertBox = Navigator.of(context);
-//
-//         return AlertDialog(
-//           title: Text(
-//             "Permission Required",
-//             style: TextStyle(
-//               fontSize: 14,
-//               fontWeight: FontWeight.w800,
-//               color: Theme.of(context).primaryColor,
-//             ),
-//           ),
-//           content: Text(
-//             "This app requires contacts and phone permissions to function.",
-//             style: TextStyle(
-//               color: Theme.of(context).primaryColor,
-//               fontWeight: FontWeight.normal,
-//               fontSize: 12,
-//             ),
-//           ),
-//           actions: [
-//             ClipRRect(
-//               borderRadius:
-//                   BorderRadius.circular(150), // Adjust the radius as needed
-//               child: Container(
-//                 color: Theme.of(context).primaryColor,
-//                 child: TextButton(
-//                   onPressed: () async {
-//                     await getPermission();
-//                     alertBox.pop();
-//                   },
-//                   child: Text(
-//                     "Get Permission",
-//                     style: TextStyle(
-//                         fontSize: 14,
-//                         color: Theme.of(context).primaryColorLight),
-//                   ),
-//                 ),
-//               ),
-//             ),
-//           ],
-//         );
-//       },
-//     );
-//   }
-// }

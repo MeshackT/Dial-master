@@ -1,17 +1,11 @@
-import 'package:dial/ReusableCode.dart';
 import 'package:flutter/material.dart';
 
-//call buttons
+import '../ReusableCode.dart';
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
-  static const routeName = '/landingScreen';
+class MoreServices extends StatelessWidget {
+  const MoreServices({Key? key}) : super(key: key);
+  static const routeName = '/moreServices';
 
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,26 +28,44 @@ class _MyHomePageState extends State<MyHomePage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Stack(
+                  alignment: Alignment.bottomCenter,
                   children: [
-                    SizedBox(
+                    // SizedBox(
+                    //   width: MediaQuery.of(context).size.width,
+                    //   height: MediaQuery.of(context).size.height / 3.8,
+                    //   child: Image.asset(
+                    //     'images/la.png',
+                    //     width: 390,
+                    //     height: 218,
+                    //     fit: BoxFit.cover,
+                    //   ),
+                    // ),
+                    Container(
                       width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height / 3.8,
+                      height: MediaQuery.of(context).size.height / 3.9,
+                      padding: const EdgeInsets.all(10),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          width: 1,
+                          color: Theme.of(context).primaryColor.withOpacity(.2),
+                        ),
+                      ),
                       child: Image.asset(
                         'images/la.png',
-                        width: 390,
-                        height: 218,
                         fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: double.infinity,
                       ),
                     ),
-                    // Reuse.speedDialHeader("Speed dial", context),
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 183),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Center(
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(10.0),
                           child: Container(
                             color: const Color(0x0f09091b).withOpacity(.6),
-                            height: 68,
+                            height: 55,
                             width: 331,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -62,11 +74,12 @@ class _MyHomePageState extends State<MyHomePage> {
                                 //   Icon(
                                 //     Icons.location_on,
                                 //     size: 25.0,
-                                //     color: Theme.of(context).primaryColorLight,
+                                //     color: Colors.green,
                                 //   ),
                                 //   () => Navigator.of(context)
                                 //       .pushNamedAndRemoveUntil(
-                                //           "/addLocation", (route) => false),
+                                //           "/addLocat
+                                //           ion", (route) => false),
                                 // ),
                                 Reuse.navigatorButton(
                                   Icon(
@@ -97,8 +110,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   ],
                 ),
                 //title//
-                Reuse.title("Emergency", context),
-                //title ends//
+                Reuse.title("More Services", context),
+
                 Padding(
                   padding: const EdgeInsets.only(top: 20),
                   child: Column(
@@ -107,18 +120,18 @@ class _MyHomePageState extends State<MyHomePage> {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           Reuse.buttonType(
-                            "Ambulance",
-                            Theme.of(context).primaryColorDark.withOpacity(.49),
-                            Icons.car_repair,
-                            () => Reuse.callAmbulance(),
+                            "Gender Based violence",
+                            Colors.pinkAccent,
+                            Icons.girl_outlined,
+                            () => Reuse.callGenderBasedViolence(),
                             context,
                           ),
                           //fighter button
                           Reuse.buttonType(
-                            "Child Line",
-                            Theme.of(context).primaryColorDark.withOpacity(.49),
-                            Icons.child_care,
-                            () => Reuse.callChildLine(),
+                            "SA Emergency",
+                            Colors.green,
+                            Icons.flag,
+                            () => Reuse.callSAEmergency(),
                             context,
                           ),
                         ],
@@ -130,18 +143,18 @@ class _MyHomePageState extends State<MyHomePage> {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           Reuse.buttonType(
-                            "Police",
-                            Theme.of(context).primaryColorDark.withOpacity(.49),
-                            Icons.star,
-                            () => Reuse.callPolice(),
+                            "NIC diseases",
+                            Colors.red,
+                            Icons.sick,
+                            () => Reuse.callNationalInstitutionOfDiseases(),
                             context,
                           ),
                           //fighter button
                           Reuse.buttonType(
-                            "Fire Fighter",
-                            Theme.of(context).primaryColorDark.withOpacity(.49),
-                            Icons.fire_truck_sharp,
-                            () => Reuse.callFireFighter(),
+                            "DOHA\nHome Affairs",
+                            Colors.yellow,
+                            Icons.maps_home_work_outlined,
+                            () => Reuse.callDepartmentOfHomeAffairs(),
                             context,
                           ),
                         ],
@@ -153,18 +166,18 @@ class _MyHomePageState extends State<MyHomePage> {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           Reuse.buttonType(
-                            "Private Ambulance",
-                            Theme.of(context).primaryColorDark.withOpacity(.49),
-                            Icons.car_rental_sharp,
-                            () => Reuse.callPrivateEmergency(),
+                            "National Crisis Line",
+                            Colors.purple,
+                            Icons.crisis_alert,
+                            () => Reuse.callNationalCrisisLine(),
                             context,
                           ),
                           //fighter button
                           Reuse.buttonType(
-                            "Net Care",
-                            Theme.of(context).primaryColorDark.withOpacity(.49),
-                            Icons.child_care,
-                            () => Reuse.callNetcare(),
+                            "Department of water affairs",
+                            Colors.blueAccent,
+                            Icons.water,
+                            () => Reuse.callDepartmentOfWater(),
                             context,
                           ),
                         ],

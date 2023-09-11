@@ -1,15 +1,17 @@
-import 'package:dial/CreateAContactButton.dart';
+import 'package:dial/authentication/wrapper.dart';
+import 'package:dial/navigation/CreateAContactButton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
 
-import 'MoreServices.dart';
-import 'ReusableCode.dart';
-import 'Settings.dart';
-import 'addFriends.dart';
-import 'landingScreen.dart';
+import './MoreServices.dart';
+import './addFriends.dart';
+import './landingScreen.dart';
+import '../Notifications/local_notifications.dart';
+import '../ReusableCode.dart';
+import '../Settings.dart';
 
 class Navigation extends StatefulWidget {
   // final bool darkModeEnabled;
@@ -80,6 +82,7 @@ class _NavigationState extends State<Navigation> {
   @override
   void initState() {
     super.initState();
+    LocalNotificationService.getPermission();
     getPermission();
     focusNode.requestFocus();
   }
@@ -98,6 +101,7 @@ class _NavigationState extends State<Navigation> {
       const MyHomePage(),
       const MoreServices(),
       const AddFriends(),
+      const Wrapper(),
       const Settings(),
     ];
 
@@ -115,7 +119,7 @@ class _NavigationState extends State<Navigation> {
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          color: Theme.of(context).primaryColor,
+          color: Theme.of(context).primaryColor.withOpacity(.2),
           boxShadow: [
             BoxShadow(
               blurRadius: 20,
@@ -141,7 +145,7 @@ class _NavigationState extends State<Navigation> {
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
             duration: const Duration(milliseconds: 400),
             // tabBackgroundColor:
-            //     Theme.of(context).primaryColorLight.withOpacity(.8),
+            //     Theme.of(context).primaryColorLight.withOpacity(.2),
             color: Theme.of(context).primaryColorLight,
             tabs: const [
               GButton(
@@ -161,6 +165,10 @@ class _NavigationState extends State<Navigation> {
                 textSize: 8,
               ),
               GButton(
+                icon: Icons.app_registration,
+                textSize: 8,
+              ),
+              GButton(
                 icon: Icons.settings,
                 textSize: 8,
               ),
@@ -176,9 +184,9 @@ class _NavigationState extends State<Navigation> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Visibility(
-              visible: selectedIndex != 4,
+              visible: selectedIndex != 5 && selectedIndex != 4,
               child: FloatingActionButton(
-                backgroundColor: Theme.of(context).primaryColor,
+                backgroundColor: Colors.green,
                 heroTag: "button_2",
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.horizontal(

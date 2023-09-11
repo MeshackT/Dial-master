@@ -10,15 +10,15 @@ import 'ReusableCode.dart';
 
 Logger logger = Logger(printer: PrettyPrinter(colors: true));
 
-class HistoryHome extends StatefulWidget {
-  const HistoryHome({Key? key}) : super(key: key);
-  static const routeName = '/historyHome';
+class MissedCallsHome extends StatefulWidget {
+  const MissedCallsHome({Key? key}) : super(key: key);
+  static const routeName = '/missedcallsHome';
 
   @override
-  State<HistoryHome> createState() => _HistoryHomeState();
+  State<MissedCallsHome> createState() => _MissedCallsHomeState();
 }
 
-class _HistoryHomeState extends State<HistoryHome> {
+class _MissedCallsHomeState extends State<MissedCallsHome> {
   ContactData contactData = ContactData();
 
   late Future<List<ContactData>> _contactData;
@@ -69,7 +69,7 @@ class _HistoryHomeState extends State<HistoryHome> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Reuse.headerText(
-                          context, "History", "A list of my recent calls"),
+                          context, "Missed", "A list of my recent calls"),
                       Reuse.spaceBetween(),
                       Text(
                         "No Data yet...",
@@ -120,7 +120,7 @@ class _HistoryHomeState extends State<HistoryHome> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Reuse.headerText(context, "History",
+                        Reuse.headerText(context, "Missed",
                             "A list of my recent called contacts"),
                         Reuse.spaceBetween(),
                         Reuse.spaceBetween(),
@@ -176,7 +176,7 @@ class _HistoryHomeState extends State<HistoryHome> {
                 width: MediaQuery.of(context).size.width,
                 // color: Theme.of(context).primaryColorLight,
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20, top: 0),
+                  padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -200,9 +200,7 @@ class _HistoryHomeState extends State<HistoryHome> {
                             child: Container(
                               width: MediaQuery.of(context).size.width / 4,
                               height: MediaQuery.of(context).size.height / 18,
-                              color: Theme.of(context)
-                                  .primaryColor
-                                  .withOpacity(.2),
+                              color: Theme.of(context).primaryColor,
                               child: TextButton.icon(
                                 onPressed: () async {
                                   showThis();
@@ -293,7 +291,6 @@ class _HistoryHomeState extends State<HistoryHome> {
                                         trailing: IconButton(
                                           icon: Icon(
                                             Icons.delete,
-                                            size: 15,
                                             color: Theme.of(context)
                                                 .primaryColorLight
                                                 .withOpacity(.7),
@@ -506,15 +503,6 @@ Future<dynamic> viewData(
                 .pushNamedAndRemoveUntil('/historyHome', (route) => false);
           },
         ),
-        // actions: [
-        //   TextButton(
-        //     onPressed: () {
-        //       Navigator.of(context).push(MaterialPageRoute(
-        //           builder: (context) => const MissedCallsHome()));
-        //     },
-        //     child: Text("missed calls"),
-        //   ),
-        // ],
       ),
       extendBodyBehindAppBar: true,
       extendBody: true,

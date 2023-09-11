@@ -1,11 +1,17 @@
+import 'package:dial/ReusableCode.dart';
 import 'package:flutter/material.dart';
 
-import 'ReusableCode.dart';
+//call buttons
 
-class MoreServices extends StatelessWidget {
-  const MoreServices({Key? key}) : super(key: key);
-  static const routeName = '/moreServices';
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({Key? key}) : super(key: key);
+  static const routeName = '/landingScreen';
 
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,26 +34,44 @@ class MoreServices extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Stack(
+                  alignment: Alignment.bottomCenter,
                   children: [
-                    SizedBox(
+                    // SizedBox(
+                    //   width: MediaQuery.of(context).size.width,
+                    //   height: MediaQuery.of(context).size.height / 3.8,
+                    //   child: Image.asset(
+                    //     'images/la.png',
+                    //     width: 390,
+                    //     height: 218,
+                    //     fit: BoxFit.cover,
+                    //   ),
+                    // ),
+                    Container(
+                      padding: const EdgeInsets.all(10),
                       width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height / 3.8,
+                      height: MediaQuery.of(context).size.height / 3.9,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          width: 1,
+                          color: Theme.of(context).primaryColor.withOpacity(.2),
+                        ),
+                      ),
                       child: Image.asset(
                         'images/la.png',
-                        width: 390,
-                        height: 218,
                         fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: double.infinity,
                       ),
                     ),
-                    // Reuse.speedDialHeader("Speed dial", context),
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 183),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Center(
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(10.0),
                           child: Container(
                             color: const Color(0x0f09091b).withOpacity(.6),
-                            height: 68,
+                            height: 55,
                             width: 331,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -56,13 +80,12 @@ class MoreServices extends StatelessWidget {
                                 //   Icon(
                                 //     Icons.location_on,
                                 //     size: 25.0,
-                                //     color: Theme.of(context).primaryColorLight,
+                                //     color: Colors.green,
                                 //   ),
-                                //   () =>
-                                //       Fluttertoast.showToast(msg: "Coming song"),
-                                //       // Navigator.of(context)
-                                //       // .pushNamedAndRemoveUntil(
-                                //       //     "/addLocation", (route) => false),
+                                //   () => Navigator.of(context)
+                                //       .pushNamedAndRemoveUntil(
+                                //           "/addLocat
+                                //           ion", (route) => false),
                                 // ),
                                 Reuse.navigatorButton(
                                   Icon(
@@ -93,28 +116,28 @@ class MoreServices extends StatelessWidget {
                   ],
                 ),
                 //title//
-                Reuse.title("More Services", context),
-
+                Reuse.title("Emergency", context),
+                //title ends//
                 Padding(
-                  padding: const EdgeInsets.only(top: 20),
+                  padding: const EdgeInsets.only(top: 15),
                   child: Column(
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           Reuse.buttonType(
-                            "Gender Based violence",
-                            Theme.of(context).primaryColorDark.withOpacity(.49),
-                            Icons.girl_outlined,
-                            () => Reuse.callGenderBasedViolence(),
+                            "Ambulance",
+                            Colors.green,
+                            Icons.car_repair,
+                            () => Reuse.callAmbulance(),
                             context,
                           ),
                           //fighter button
                           Reuse.buttonType(
-                            "SA Emergency",
-                            Theme.of(context).primaryColorDark.withOpacity(.49),
-                            Icons.flag,
-                            () => Reuse.callSAEmergency(),
+                            "Child Line",
+                            Colors.orange,
+                            Icons.child_care,
+                            () => Reuse.callChildLine(),
                             context,
                           ),
                         ],
@@ -126,18 +149,18 @@ class MoreServices extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           Reuse.buttonType(
-                            "NIC diseases",
-                            Theme.of(context).primaryColorDark.withOpacity(.49),
-                            Icons.sick,
-                            () => Reuse.callNationalInstitutionOfDiseases(),
+                            "Police",
+                            Colors.blue,
+                            Icons.star,
+                            () => Reuse.callPolice(),
                             context,
                           ),
                           //fighter button
                           Reuse.buttonType(
-                            "DOHA\nHome Affairs",
-                            Theme.of(context).primaryColorDark.withOpacity(.49),
-                            Icons.maps_home_work_outlined,
-                            () => Reuse.callDepartmentOfHomeAffairs(),
+                            "Fire Fighter",
+                            Colors.red,
+                            Icons.fire_truck_sharp,
+                            () => Reuse.callFireFighter(),
                             context,
                           ),
                         ],
@@ -149,18 +172,18 @@ class MoreServices extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           Reuse.buttonType(
-                            "National Crisis Line",
-                            Theme.of(context).primaryColorDark.withOpacity(.49),
-                            Icons.crisis_alert,
-                            () => Reuse.callNationalCrisisLine(),
+                            "Private Ambulance",
+                            Colors.lightGreen,
+                            Icons.car_rental_sharp,
+                            () => Reuse.callPrivateEmergency(),
                             context,
                           ),
                           //fighter button
                           Reuse.buttonType(
-                            "Department of water affairs",
-                            Theme.of(context).primaryColorDark.withOpacity(.49),
-                            Icons.water,
-                            () => Reuse.callDepartmentOfWater(),
+                            "Net Care",
+                            Colors.orange,
+                            Icons.child_care,
+                            () => Reuse.callNetcare(),
                             context,
                           ),
                         ],

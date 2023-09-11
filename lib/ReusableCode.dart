@@ -1,4 +1,4 @@
-import 'package:dial/landingScreen.dart';
+import 'package:dial/navigation/landingScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -8,7 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
 
 import 'DBModel/DatabaseHelper.dart';
-import 'MoreServices.dart';
+import 'navigation/MoreServices.dart';
 
 class Reuse {
   static final DateTime _dateFormater = DateTime.now();
@@ -64,10 +64,14 @@ class Reuse {
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: Container(
-        color: color,
-        width: 100,
-        height: 100,
+        // color: color,
+        width: 95,
+        height: 95,
         child: ElevatedButton(
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all<Color>(
+                Theme.of(context).primaryColor.withOpacity(.2)),
+          ),
           onPressed: onPress,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -76,12 +80,14 @@ class Reuse {
                 title,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                    color: Theme.of(context).primaryColorLight, fontSize: 11),
+                  color: Theme.of(context).primaryColorLight,
+                  fontSize: 10,
+                ),
               ),
               Icon(
                 icon,
-                size: 40,
-                color: Theme.of(context).primaryColorLight,
+                size: 30,
+                color: color,
               )
             ],
           ),
@@ -94,7 +100,7 @@ class Reuse {
   static Center title(String header, BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.only(top: 20),
+        padding: const EdgeInsets.only(top: 10),
         child: Text(
           header,
           style: TextStyle(
@@ -356,7 +362,7 @@ class Reuse {
       BuildContext context, String text) {
     return ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-          backgroundColor: Theme.of(context).primaryColor,
+          backgroundColor: Theme.of(context).primaryColor.withOpacity(.6),
           content: Text(
             text,
             style: TextStyle(color: Theme.of(context).primaryColorLight),
@@ -427,6 +433,22 @@ class Reuse {
   }
 }
 
+TextStyle textStyleText1 = const TextStyle(
+    fontWeight: FontWeight.normal, letterSpacing: 1, color: Colors.indigo);
+
+InputDecoration textInputDecoration1 = InputDecoration(
+  // fillColor: Colors.white,
+  // filled: true,
+  border: OutlineInputBorder(
+    borderSide: const BorderSide(color: Colors.white, width: 1),
+    borderRadius: BorderRadius.circular(100),
+  ),
+  enabledBorder: OutlineInputBorder(
+    borderSide: const BorderSide(color: Colors.white, width: 1),
+    borderRadius: BorderRadius.circular(100),
+  ),
+  enabled: true,
+);
 TextStyle textStyleText = const TextStyle(
     fontWeight: FontWeight.normal, letterSpacing: 1, color: Colors.indigo);
 
