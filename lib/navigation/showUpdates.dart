@@ -3,14 +3,27 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dial/ReusableCode.dart';
+import 'package:dial/payments/paymentWidget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:location/location.dart';
+import 'package:pay/pay.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../DBModel/Place.dart';
+// import 'payment_configurations.dart' as payment_configurations;
+
+late final Future<PaymentConfiguration> _googlePayConfigFuture;
+
+const _paymentItems = [
+  PaymentItem(
+    label: 'Total',
+    amount: '99.99',
+    status: PaymentItemStatus.final_price,
+  )
+];
 
 class ShowUpdates extends StatefulWidget {
   const ShowUpdates({Key? key}) : super(key: key);
@@ -236,7 +249,7 @@ class _ShowUpdatesState extends State<ShowUpdates> {
   Future<void> fetchDataFire() async {
     final lng = _pickLocation?.longitude;
     final lat = _pickLocation?.latitude;
-    final fireRadius = 10000;
+    const fireRadius = 10000;
 
     String apiUrlFire = "";
     const String searchTypeFire = 'fire_fighter';
@@ -286,6 +299,17 @@ class _ShowUpdatesState extends State<ShowUpdates> {
     // getLocationData();
     // Get the location first
     // _getCurrentLocation();
+    _googlePayConfigFuture =
+        PaymentConfiguration.fromAsset('default_google_pay_config.json');
+  }
+
+  //pay functions
+  void onGooglePayResult(paymentResult) {
+    debugPrint(paymentResult.toString());
+  }
+
+  void onApplePayResult(paymentResult) {
+    debugPrint(paymentResult.toString());
   }
 
   Future<void> getLocationData() {
@@ -358,32 +382,32 @@ class _ShowUpdatesState extends State<ShowUpdates> {
               fontSize: 14, color: Theme.of(context).primaryColorLight),
         ),
         actions: [
-          // defaultButton
-          //     ? IconButton(
-          //         onPressed: () {
-          //           //  default buttons show
-          //           showPayment();
-          //           setState(() {
-          //             if (defaultButton = false) {
-          //               defaultButton1 = true;
-          //             } else if (defaultButton1 = true) {
-          //               defaultButton = false;
-          //             }
-          //           });
-          //         },
-          //         icon: const Icon(Icons.payments))
-          //     : IconButton(
-          //         onPressed: () {
-          //           //  default buttons show
-          //           setState(() {
-          //             if (defaultButton1 = false) {
-          //               defaultButton = true;
-          //             } else if (defaultButton = true) {
-          //               defaultButton1 = false;
-          //             }
-          //           });
-          //         },
-          //         icon: const Icon(Icons.published_with_changes_rounded)),
+          defaultButton
+              ? IconButton(
+                  onPressed: () {
+                    //  default buttons show
+                    showPayment();
+                    setState(() {
+                      if (defaultButton = false) {
+                        defaultButton1 = true;
+                      } else if (defaultButton1 = true) {
+                        defaultButton = false;
+                      }
+                    });
+                  },
+                  icon: const Icon(Icons.payments))
+              : IconButton(
+                  onPressed: () {
+                    //  default buttons show
+                    setState(() {
+                      if (defaultButton1 = false) {
+                        defaultButton = true;
+                      } else if (defaultButton = true) {
+                        defaultButton1 = false;
+                      }
+                    });
+                  },
+                  icon: const Icon(Icons.published_with_changes_rounded)),
           _popUpMenuButtons(),
         ],
       ),
@@ -751,7 +775,6 @@ class _ShowUpdatesState extends State<ShowUpdates> {
                       }),
                 ),
               ),
-              //TODO show default data here
               //TODO show default data here
               Visibility(
                 visible: hospitalButtonD && defaultButton,
@@ -1214,6 +1237,90 @@ class _ShowUpdatesState extends State<ShowUpdates> {
     //       }),
   }
 
+  Widget paymentWidget() {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height,
+      color: Colors.white,
+      child: ListView(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        children: [
+          TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("Pop")),
+          Container(
+            margin: const EdgeInsets.symmetric(vertical: 20),
+            child: const CircularProgressIndicator(),
+          ),
+          const Text(
+            'Amanda\'s Polo Shirt',
+            style: TextStyle(
+              fontSize: 20,
+              color: Color(0xff333333),
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 5),
+          const Text(
+            '\$50.20',
+            style: TextStyle(
+              color: Color(0xff777777),
+              fontSize: 15,
+            ),
+          ),
+          const SizedBox(height: 15),
+          const Text(
+            'Description',
+            style: TextStyle(
+              fontSize: 15,
+              color: Color(0xff333333),
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 5),
+          const Text(
+            'A versatile full-zip that you can wear all day long and even...',
+            style: TextStyle(
+              color: Color(0xff777777),
+              fontSize: 15,
+            ),
+          ),
+          // Example pay button configured using an asset
+          FutureBuilder<PaymentConfiguration>(
+              future: _googlePayConfigFuture,
+              builder: (context, snapshot) => snapshot.hasData
+                  ? GooglePayButton(
+                      paymentConfiguration: snapshot.data!,
+                      paymentItems: _paymentItems,
+                      type: GooglePayButtonType.buy,
+                      margin: const EdgeInsets.only(top: 15.0),
+                      onPaymentResult: onGooglePayResult,
+                      loadingIndicator: const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    )
+                  : const SizedBox.shrink()),
+          // Example pay button configured using a string
+          // ApplePayButton(
+          //   paymentConfiguration: PaymentConfiguration.fromJsonString(
+          //       payment_configurations.defaultApplePay),
+          //   paymentItems: _paymentItems,
+          //   style: ApplePayButtonStyle.black,
+          //   type: ApplePayButtonType.buy,
+          //   margin: const EdgeInsets.only(top: 15.0),
+          //   onPaymentResult: onApplePayResult,
+          //   loadingIndicator: const Center(
+          //     child: CircularProgressIndicator(),
+          //   ),
+          // ),
+          const SizedBox(height: 15)
+        ],
+      ),
+    );
+  }
+
   Future showPayment() {
     return showCupertinoDialog(
         context: context,
@@ -1241,10 +1348,15 @@ class _ShowUpdatesState extends State<ShowUpdates> {
                     color: Theme.of(context).primaryColor,
                   ),
                 ),
+                // onPressed: paymentWidget,
                 onPressed: () {
                   //Todo  //////////////////
                   // Navigator.of(context).pop();
-                  // Reuse.callSnack(context, "Still under development");
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) => const PaymentWidget(),
+                    ),
+                  );
                 },
               ),
               CupertinoDialogAction(
