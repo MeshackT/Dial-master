@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "484036722971",
+    "project_id": "dial-fsh",
+    "storage_bucket": "dial-fsh.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:484036722971:android:853aa7ebdf5e804ce8d3be",
+        "android_client_info": {
+          "package_name": "com.meshacknkosi.dial"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "484036722971-51hdo2ttek7mva3bp2iqgug2ngcfk536.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBepclbeSRUsBqy_6oLC5vcAVqnnBW0HzA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "484036722971-51hdo2ttek7mva3bp2iqgug2ngcfk536.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
