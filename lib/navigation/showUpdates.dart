@@ -15,16 +15,6 @@ import 'package:url_launcher/url_launcher.dart';
 import '../DBModel/Place.dart';
 // import 'payment_configurations.dart' as payment_configurations;
 
-late final Future<PaymentConfiguration> _googlePayConfigFuture;
-
-const _paymentItems = [
-  PaymentItem(
-    label: 'Total',
-    amount: '99.99',
-    status: PaymentItemStatus.final_price,
-  )
-];
-
 class ShowUpdates extends StatefulWidget {
   const ShowUpdates({Key? key}) : super(key: key);
   static const routeName = '/showUpdates';
@@ -35,13 +25,14 @@ class ShowUpdates extends StatefulWidget {
 
 class _ShowUpdatesState extends State<ShowUpdates> {
   final String apiKey = 'AIzaSyBOx5ybi0WTutSJZr3LD9EyotpyoO5srgk';
-  final int radius = 10000;
+  final int radius = 80000;
   final String searchType = 'hospital';
   final String searchTypePolice = 'police';
   final String searchTypeSchool = 'school';
   final String searchTypeFire = 'fire_fighter';
   final String searchTypeHomeAffairs = 'HomeAffairs';
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  late final Future<PaymentConfiguration> _googlePayConfigFuture;
 
   //get data and store it in a list
   List<dynamic> hospitals = [];
@@ -249,7 +240,7 @@ class _ShowUpdatesState extends State<ShowUpdates> {
   Future<void> fetchDataFire() async {
     final lng = _pickLocation?.longitude;
     final lat = _pickLocation?.latitude;
-    const fireRadius = 10000;
+    const fireRadius = 80000;
 
     String apiUrlFire = "";
     const String searchTypeFire = 'fire_fighter';
@@ -293,12 +284,19 @@ class _ShowUpdatesState extends State<ShowUpdates> {
     );
   }
 
+  List<PaymentItem> _paymentItems = [
+    PaymentItem(
+      label: 'Total',
+      amount: '99.99',
+      status: PaymentItemStatus.final_price,
+    )
+  ];
   @override
   void initState() {
     super.initState();
     // getLocationData();
     // Get the location first
-    // _getCurrentLocation();
+    _getCurrentLocation();
     _googlePayConfigFuture =
         PaymentConfiguration.fromAsset('default_google_pay_config.json');
   }
@@ -481,8 +479,8 @@ class _ShowUpdatesState extends State<ShowUpdates> {
                                     fireFighterButtonD = false;
                                   }
                                 });
-                                // await addDataToDocument(
-                                //     hospitals, policeStation, fireStation);
+                                await addDataToDocument(
+                                    hospitals, policeStation, fireStation);
                                 Reuse.logger.i("1");
                               },
                               icon: const Icon(
@@ -1171,7 +1169,7 @@ class _ShowUpdatesState extends State<ShowUpdates> {
               ),
               // onPressed: _getCurrentLocation,
               onPressed: () {
-                // _getCurrentLocation();
+                _getCurrentLocation();
 
                 Reuse.logger.i(hospitals);
               },

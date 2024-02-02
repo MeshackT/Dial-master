@@ -20,8 +20,8 @@ flutter pub global run rename --appname "Dial FSH"
 flutter pub global run rename --bundleId com.meshacknkosi.dial
 
 
-keytool -genkey -v -keystore C:\Users\mesha\Desktop/upload-keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload
-
+keytool -genkey -v -keystore C:\Users\mesha\Desktop/upload-keystore.jks -keyalg RSA -keysize 2048-validity 10000 -alias upload
+keytool -export -rfc -keystore upload-keystore.jks -alias upload -file upload_certificate.pem
 
 https://github.com/MeshackT/Policies/blob/main/Privacy-Dial.md
 
